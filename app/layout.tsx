@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Archivo, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-body",
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -36,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${spaceGrotesk.className} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
