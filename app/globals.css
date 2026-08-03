@@ -70,8 +70,9 @@ body {
 /* Scroll reveal */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: transform, opacity;
 }
 
 .scroll-reveal.revealed {
@@ -81,7 +82,8 @@ body {
 
 /* Subtle hover transitions */
 .hover-lift {
-  transition: transform 0.25s ease-out, border-color 0.25s ease-out;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  will-change: transform;
 }
 
 .hover-lift:hover {
@@ -89,13 +91,13 @@ body {
 }
 
 .hover-border {
-  transition: border-color 0.2s ease-out;
+  transition: border-color 0.3s ease;
 }
 
 .hover-opacity {
-  transition: opacity 0.25s ease-out;
+  transition: opacity 0.3s ease;
 }
 
 .hover-bg {
-  transition: background-color 0.2s ease-out;
+  transition: background-color 0.3s ease;
 }
