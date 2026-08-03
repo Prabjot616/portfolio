@@ -2,9 +2,6 @@
 
 import { Mail, ExternalLink, Code2, Award, Briefcase, GraduationCap, ArrowUpRight } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
-import VariableFontAndCursor from '@/components/fancy/text/variable-font-and-cursor';
-import ScrambleHover from '@/components/fancy/text/scramble-hover';
-import RandomLetterSwapPingPong from '@/components/fancy/text/random-letter-swap';
 
 const LinkedInIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
@@ -21,7 +18,6 @@ const GitHubIcon = ({ className }: { className?: string }) => (
 const personalInfo = {
   name: 'PRABJOT KAUR',
   title: 'Lead Software Engineer',
-  phone: '8582870608',
   email: 'prabjotkaur4@gmail.com',
   linkedin: 'https://www.linkedin.com/in/prabjot-kaur-10b6874b/',
   github: 'https://github.com/Prabjot616',
@@ -31,25 +27,27 @@ const experience = [
   {
     title: 'Lead Software Engineer',
     company: 'Tech Wishes Solutions',
-    location: 'Kolkata, West Bengal, India · Hybrid',
+    location: 'Kolkata, West Bengal, India',
     period: 'Oct 2024 – Present',
     points: [
-      'Developed scalable e-commerce and web applications using PHP frameworks and MVC architecture, improving maintainability',
-      'Led development and architectural decisions for Shopify and custom web platforms',
-      'Integrated third-party APIs routing and shipping services',
+      'Lead architecture decisions for Shopify app development, full-stack web, mobile (React Native), and AI/agent-based systems',
+      'Review Shopify platform updates as they roll out and coordinate technical execution across the engineering team',
+      'Handle infrastructure work including server hardening, deployment pipelines, and production troubleshooting',
+      'Build tools and systems that improve delivery consistency and velocity for client projects',
     ],
-    skills: 'Model-View-Controller (MVC) · PHP Frameworks'
+    skills: 'Product Engineering · Team Leadership · API Design · Shopify Apps · AI Agent Systems'
   },
   {
     title: 'Senior Software Engineer',
     company: 'Tech Wishes Solutions',
-    location: 'India · Hybrid',
+    location: 'India',
     period: 'Oct 2021 – Sep 2024',
     points: [
       'Built and maintained backend APIs and database systems supporting scalable commerce platforms',
-      'Optimized application architecture and database queries to improve system performance',
+      'Developed Shopify applications and integrations for e-commerce clients',
+      'Optimized application architecture and database queries to improve system performance and reliability',
     ],
-    skills: 'Model-View-Controller (MVC) · PHP Frameworks'
+    skills: 'Full-Stack Development · Shopify APIs · Database Architecture'
   },
   {
     title: 'Software Engineer',
@@ -57,53 +55,57 @@ const experience = [
     location: 'India',
     period: 'Aug 2020 – Sep 2021',
     points: [
-      'Built backend modules and application features using PHP MVC frameworks',
-      'Designed and implemented database schemas and API integrations',
+      'Built backend modules and application features using modern web frameworks',
+      'Designed and implemented database schemas and API integrations for client projects',
+      'Collaborated with team on e-commerce platform development',
     ],
-    skills: 'Model-View-Controller (MVC) · PHP Frameworks'
+    skills: 'Backend Development · API Integration · Database Design'
   },
   {
-    title: 'Internship',
+    title: 'Engineering Intern',
     company: 'Tech Wishes Solutions',
     location: 'Kolkata Area, India',
     period: 'Jun 2019 – Jul 2020',
     points: [
       'Assisted in developing and maintaining web application modules',
-      'Gained hands-on experience in backend architectures and MVC principles',
+      'Gained hands-on experience in backend architectures and software engineering practices',
+      'Contributed to client projects under senior engineer mentorship',
     ],
-    skills: 'Model-View-Controller (MVC) · PHP Frameworks'
+    skills: 'Software Development · Backend Systems'
   },
 ];
 
 const projects = [
   {
-    title: 'AI Website SEO Analyzer',
-    subtitle: 'Automated AI SEO & GEO Audit Tool',
-    description: 'Built an AI-powered system that analyzes websites and generates SEO, GEO, and competitor insights automatically. Integrates Google ADK and Notion APIs.',
-    tech: ['Python', 'Google ADK', 'AI Agents'],
+    title: 'Multi-Agent AI SEO/GEO Analysis Pipeline',
+    subtitle: 'Top 100 - Google APAC Hackathon',
+    description: 'Built a multi-agent AI system on Google Cloud (ADK, Vertex AI, AlloyDB) that analyzes websites and generates comprehensive SEO, GEO, and competitor insights. Placed in top 100 at Google APAC hackathon.',
+    tech: ['Google Cloud', 'Vertex AI', 'AlloyDB', 'Python', 'AI Agents'],
     colSpan: 'col-span-1 md:col-span-2',
   },
   {
-    title: 'Shopify Merchant Tools',
-    subtitle: 'Scalable E-commerce Apps',
-    description: 'Developed custom Shopify applications and backend tools for e-commerce stores.',
-    tech: ['PHP', 'Shopify APIs', 'MySQL'],
+    title: 'Shopify App Ecosystem',
+    subtitle: 'E-commerce Platform Development',
+    description: 'Led architecture and development for Shopify applications serving e-commerce merchants. Coordinated platform updates, team execution, and infrastructure reliability across multiple production apps.',
+    tech: ['Shopify APIs', 'React', 'Node.js', 'PostgreSQL'],
     colSpan: 'col-span-1',
   },
   {
     title: 'Pomodoro Pulse',
-    subtitle: 'Focus & Productivity Timer',
-    description: 'Published a Pomodoro productivity timer mobile application on Google Play.',
-    tech: ['React Native'],
+    subtitle: 'Mobile Productivity App',
+    description: 'Published a Pomodoro productivity timer mobile application on Google Play Store built with React Native.',
+    tech: ['React Native', 'Mobile Development'],
     link: 'https://play.google.com/store/apps/details?id=com.pomodoropulse',
     colSpan: 'col-span-1 md:col-span-3',
   },
 ];
 
 const allSkills = [
-  'PHP', 'JavaScript', 'Python', 'HTML', 'CSS', 'Shopify Liquid',
-  'PHP Frameworks', 'MVC Architecture', 'REST APIs', 'MySQL',
-  'Docker', 'Git', 'Prompt Engineering', 'Generative AI', 'Agentic Workflows'
+  'Shopify App Development', 'AI Agent Systems', 'React Native', 'Full-Stack Engineering',
+  'Google Cloud Platform', 'Vertex AI', 'AWS', 'Product Engineering',
+  'Team Leadership', 'API Design', 'REST APIs', 'Node.js', 'React',
+  'Python', 'JavaScript', 'PostgreSQL', 'AlloyDB', 'MySQL',
+  'Docker', 'CI/CD', 'Server Hardening', 'Infrastructure', 'Git'
 ];
 
 const education = [
@@ -122,9 +124,12 @@ const education = [
 ];
 
 const certifications = [
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)' },
+  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI' },
+  { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)' },
   { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture' },
   { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)' },
-  { name: 'Career Essentials in Generative AI', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering' },
+  { name: 'Career Essentials in Generative AI by Microsoft and LinkedIn', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering' },
   { name: 'Ethics in the Age of Generative AI', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Responsible AI · Computer Ethics · Generative AI' },
   { name: 'Learning Microsoft 365 Copilot and Business Chat', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Office 365 · Microsoft Copilot' },
   { name: 'Streamlining Your Work with Microsoft Copilot', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'AI for Business · AI Productivity · Generative AI' },
@@ -136,30 +141,25 @@ const certifications = [
   { name: 'Game Development Foundations: Game-Related Math', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Game Development' },
   { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
   { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
-  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
+  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
-  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ' },
-  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3' },
-  { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR' },
-  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB...' },
-  { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019', link: 'https://www.credly.com/badges/692d4ee2-5f2e-49dc-8ef1-ffec7b0061c4', image: '/images/ibm-badge.png' },
-  { name: 'Android Application development', issuer: 'Techtree Technologies', date: '' },
-  { name: 'Diploma in Computer Hardware', issuer: 'Independent', date: '' },
+  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
 ];
 
 const achievements = [
-  'Mentor of the Year 2026 – Tech Wishes Solutions',
+  'Mentor of the Year 2025-26 – Tech Wishes Solutions',
+  'Top 100 Finalist – Google APAC Hackathon (AI/SEO Analysis Pipeline)',
+  'AWS AI Practitioner Certified – 2024',
   'Employee of the Year 2022-23 – Tech Wishes Solutions',
+  'Star Performer 2020-21 – Tech Wishes Solutions',
   'Employee of the Year 2020-21 – Tech Wishes Solutions',
-  'Code Gladiator 2019 Semifinalist – TechGig coding competition',
-  'Earned multiple certifications in Artificial Intelligence, Generative AI, and Software Architecture',
-  'Progressed internally from Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer at Tech Wishes Solutions'
+  'Academic Excellence Award - BCA 2017-18',
+  'Progressed from Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer at Tech Wishes Solutions (2019-Present)'
 ];
 
 export default function Portfolio() {
   const [mounted, setMounted] = useState(false);
   const leftColRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
   const [rightHeight, setRightHeight] = useState<string>('600px');
 
   useEffect(() => {
@@ -167,7 +167,6 @@ export default function Portfolio() {
 
     const updateHeight = () => {
       if (leftColRef.current) {
-        // On desktop (lg), match left column precisely. On mobile, default to 600px.
         if (window.innerWidth >= 1024) {
           setRightHeight(`${leftColRef.current.offsetHeight}px`);
         } else {
@@ -176,83 +175,85 @@ export default function Portfolio() {
       }
     };
 
-    // Small delay to ensure images/fonts loaded
     setTimeout(updateHeight, 100);
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.scroll-reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [mounted]);
+
   if (!mounted) return null;
 
   return (
-    <main className="relative flex flex-col w-full min-h-screen bg-zinc-50 overflow-x-clip pt-16 font-sans">
-
-      {/* Aurora Background Effect (21st.dev style) */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="aurora-bg animate-aurora"></div>
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-[30px] w-full h-full"></div>
-      </div>
+    <main className="relative flex flex-col w-full min-h-screen bg-[#fafafa] overflow-x-clip font-sans">
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative w-full max-w-6xl mx-auto px-6 py-24 md:py-40 flex flex-col items-center text-center animate-fade-in-up">
-        {/* Dynamic Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-600 text-sm font-medium mb-8 hover:bg-blue-500/10 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.15)] animate-float">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
-          </span>
-          Available for New Opportunities
-        </div>
-
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-zinc-900 mb-6 drop-shadow-sm delay-150 z-10 flex flex-col items-center">
-          Hi, I am
-          <div className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-teal-400 animate-gradient-x pb-4 pt-2 overflow-visible">
-            <VariableFontAndCursor
-              className="font-black"
-              fontVariationMapping={{
-                y: { name: "wght", min: 100, max: 900 },
-                x: { name: "slnt", min: 0, max: -10 },
-              }}
-              containerRef={heroRef}
-            >
+      <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-32 md:py-48 lg:py-56">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+          {/* Left Content */}
+          <div className="lg:col-span-7 order-2 lg:order-1">
+            <h1 className="font-display text-[12vw] sm:text-[10vw] md:text-[8.5vw] lg:text-[100px] xl:text-[120px] text-zinc-950 mb-16 leading-[0.85] tracking-tight animate-slide-up">
               {personalInfo.name}
-            </VariableFontAndCursor>
-          </div>
-        </h1>
+            </h1>
 
-        <p className="text-xl md:text-2xl text-zinc-600 font-medium max-w-3xl mb-12 delay-300">
-          Lead Software Engineer with 6+ years building scalable web frameworks, Shopify ecosystems, and emerging AI technologies.
-        </p>
+            <p className="text-base md:text-lg text-zinc-600 max-w-xl mb-20 leading-relaxed animate-slide-up delay-100">
+              Lead Software Engineer specializing in Shopify app architecture, AI agent systems, and full-stack engineering. Building multi-agent AI pipelines on Google Cloud and leading technical execution for e-commerce platforms.
+            </p>
 
-        {/* MagicUI Style glowing buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center delay-500">
-          <a href={`mailto:${personalInfo.email}`}
-            className="relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-blue-600 px-8 font-medium text-white shadow-[0_0_40px_-5px_rgba(59,130,246,0.4)] transition-all hover:scale-105 hover:bg-blue-700 hover:shadow-[0_0_60px_-10px_rgba(59,130,246,0.5)] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
-            <Mail className="mr-2 h-5 w-5" />
-            <RandomLetterSwapPingPong label="Connect With Me" className="font-semibold text-white h-6 mt-1.5" />
-            <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-              <div className="relative h-full w-8 bg-white/20" />
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-5 items-start animate-slide-up delay-200">
+              <a href={`mailto:${personalInfo.email}`}
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-zinc-950 text-white font-medium rounded-full hover-bg hover:bg-zinc-800">
+                <Mail className="h-5 w-5" />
+                <span>Get in Touch</span>
+              </a>
+
+              <div className="flex gap-4">
+                <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-zinc-200 text-zinc-700 hover-border hover:border-zinc-950 hover:text-zinc-950 transition-colors duration-200">
+                  <LinkedInIcon />
+                </a>
+                <a href={personalInfo.github} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-zinc-200 text-zinc-700 hover-border hover:border-zinc-950 hover:text-zinc-950 transition-colors duration-200">
+                  <GitHubIcon />
+                </a>
+              </div>
             </div>
-          </a>
+          </div>
 
-          <div className="flex gap-4">
-            <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="group inline-flex h-14 w-14 items-center justify-center rounded-full bg-white border border-zinc-200 text-zinc-700 hover:border-zinc-300 hover:text-blue-600 hover:shadow-lg transition-all hover:-translate-y-1">
-              <LinkedInIcon className="transition-transform group-hover:scale-110" />
-            </a>
-            <a href={personalInfo.github} target="_blank" rel="noopener" className="group inline-flex h-14 w-14 items-center justify-center rounded-full bg-white border border-zinc-200 text-zinc-700 hover:border-zinc-300 hover:text-blue-600 hover:shadow-lg transition-all hover:-translate-y-1">
-              <GitHubIcon className="transition-transform group-hover:scale-110" />
-            </a>
+          {/* Right Image */}
+          <div className="lg:col-span-5 order-1 lg:order-2 animate-fade-in">
+            <div className="relative aspect-[4/5] max-w-md mx-auto lg:ml-auto">
+              <img
+                src="/images/hero-portrait.jpeg"
+                alt="Prabjot Kaur"
+                className="w-full h-full object-cover grayscale-[30%]"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Skills Marquee Section (21st.dev Style Infinite Scroll) */}
-      <section className="py-12 border-y border-zinc-200/50 bg-white/50 backdrop-blur-sm overflow-hidden flex flex-col gap-4">
-        {/* Track 1: Left */}
-        <div className="flex overflow-hidden group">
-          <div className="flex animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap min-w-full">
+      {/* Skills Marquee Section */}
+      <section className="py-24 border-y border-zinc-200 bg-white overflow-hidden">
+        <div className="flex overflow-hidden">
+          <div className="flex animate-marquee whitespace-nowrap min-w-full">
             {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => (
-              <span key={`1-${index}`} className="mx-4 flex items-center justify-center h-12 px-6 rounded-2xl bg-zinc-100/80 border border-zinc-200 text-zinc-700 font-medium whitespace-nowrap">
+              <span key={`1-${index}`} className="mx-3 flex items-center justify-center h-11 px-5 rounded-full border border-zinc-300 text-zinc-800 text-sm font-medium whitespace-nowrap">
                 {skill}
               </span>
             ))}
@@ -260,39 +261,34 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Bento Grid Projects Section */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-12 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-inner">
-            <Code2 size={24} />
-          </div>
+      {/* Projects Section */}
+      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
+        <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-zinc-950 mb-24 tracking-tight">
           Featured Works
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {projects.map((project, idx) => (
-            <div key={idx} className={`${project.colSpan} group relative flex flex-col overflow-hidden rounded-[2rem] bg-white border border-zinc-200/60 p-8 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]`}>
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-teal-400 opacity-0 transition-opacity group-hover:opacity-100" />
-
+            <div key={idx} className={`${project.colSpan} scroll-reveal group relative flex flex-col bg-white border border-zinc-200 p-8 md:p-10 hover-lift hover-border hover:border-zinc-950`}>
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">{project.title}</h3>
-                  <p className="text-sm font-semibold text-blue-500 mt-1">{project.subtitle}</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-zinc-950 mb-2">{project.title}</h3>
+                  <p className="text-sm text-zinc-500 uppercase tracking-wide">{project.subtitle}</p>
                 </div>
                 {project.link && (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-zinc-100 text-zinc-500 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-all flex-shrink-0 group/link">
-                    <ArrowUpRight size={20} className="group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 transition-transform" />
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-zinc-200 flex items-center justify-center hover-border hover:border-zinc-950 flex-shrink-0 group/link">
+                    <ArrowUpRight size={18} className="text-zinc-600 group-hover/link:text-zinc-950 transition-colors duration-200" />
                   </a>
                 )}
               </div>
 
-              <p className="text-zinc-600 leading-relaxed max-w-md flex-grow mb-8">
+              <p className="text-zinc-600 leading-relaxed flex-grow mb-8">
                 {project.description}
               </p>
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {project.tech.map((tech) => (
-                  <span key={tech} className="px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200/50 text-xs font-semibold text-zinc-700 shadow-sm">
+                  <span key={tech} className="px-3 py-1.5 border border-zinc-300 text-xs font-medium text-zinc-700">
                     {tech}
                   </span>
                 ))}
@@ -303,44 +299,40 @@ export default function Portfolio() {
       </section>
 
       {/* Experience Timeline */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24 mb-24 relative">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-16 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center shadow-inner">
-            <Briefcase size={24} />
-          </div>
+      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
+        <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-zinc-950 mb-32 tracking-tight">
           Experience
         </h2>
 
-        <div className="relative border-l border-zinc-200 ml-4 md:ml-6 space-y-12">
+        <div className="relative border-l-2 border-zinc-200 ml-0 space-y-24">
           {experience.map((job, idx) => (
-            <div key={idx} className="relative pl-8 md:pl-16 group">
-              <div className="absolute left-[-9px] top-2 w-4 h-4 rounded-full bg-white border-2 border-primary shadow-[0_0_0_4px_rgba(59,130,246,0.1)] transition-all group-hover:scale-125 group-hover:border-blue-500 group-hover:shadow-[0_0_0_6px_rgba(59,130,246,0.2)]" />
+            <div key={idx} className="scroll-reveal relative pl-12 md:pl-16 group">
+              <div className="absolute left-[-9px] top-2 w-4 h-4 bg-zinc-950" />
 
-              <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 shadow-sm transition-all group-hover:shadow-lg group-hover:border-blue-200 relative overflow-hidden">
-                <div className="absolute -right-16 -top-16 bg-blue-50 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2 relative z-10">
-                  <h3 className="text-xl md:text-2xl font-bold text-zinc-900">{job.title}</h3>
-                  <span className="inline-block px-3 py-1 bg-zinc-100 rounded-full text-sm font-medium text-zinc-600 border border-zinc-200 w-fit">
+              <div className="bg-white border border-zinc-200 p-8 md:p-10 hover-border group-hover:border-zinc-950">
+                <div className="flex flex-col md:flex-row md:items-start justify-between mb-6 gap-3">
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-zinc-950 mb-2">{job.title}</h3>
+                    <h4 className="text-base text-zinc-600 font-medium">{job.company}</h4>
+                  </div>
+                  <span className="inline-block text-sm text-zinc-500 uppercase tracking-wide">
                     {job.period}
                   </span>
                 </div>
-                <h4 className="text-blue-600 font-semibold mb-4 bg-blue-50 inline-block px-3 py-1 rounded-lg">{job.company}</h4>
 
-                <ul className="space-y-3 relative z-10 mb-6">
+                <ul className="space-y-3 mb-6">
                   {job.points.map((point, i) => (
                     <li key={i} className="text-zinc-600 flex items-start gap-3 leading-relaxed">
-                      <span className="text-blue-500 font-bold mt-0.5 opacity-50 block w-4 flex-shrink-0">›</span>
+                      <span className="text-zinc-400 mt-0.5 block w-4 flex-shrink-0">—</span>
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
 
-                {/* @ts-ignore */}
                 {job.skills && (
-                  <div className="relative z-10 pt-4 border-t border-zinc-100 flex items-center gap-2">
-                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex-shrink-0">Skills</span>
-                    <p className="text-sm font-medium text-blue-600 leading-snug">{job.skills}</p>
+                  <div className="pt-6 border-t border-zinc-200 flex items-center gap-3">
+                    <span className="text-xs text-zinc-400 uppercase tracking-wider">Skills</span>
+                    <p className="text-sm text-zinc-700">{job.skills}</p>
                   </div>
                 )}
               </div>
@@ -349,117 +341,101 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Education & Certs */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-24 mb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      {/* Education & Certifications */}
+      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48 border-t border-zinc-200">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
 
           {/* Education */}
           <div ref={leftColRef}>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-12 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shadow-inner">
-                <GraduationCap size={24} />
-              </div>
+            <h2 className="font-display text-4xl md:text-5xl text-zinc-950 mb-24 tracking-tight">
               Education
             </h2>
-            <div className="space-y-8">
+            <div className="space-y-16">
               {education.map((edu, idx) => (
-                <div key={idx} className="relative pl-6 border-l-2 border-indigo-100 pb-2">
-                  <div className="absolute left-[-9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-indigo-400" />
-                  <h3 className="text-xl font-bold text-zinc-900">{edu.degree}</h3>
-                  <p className="text-indigo-600 font-semibold mt-1">{edu.school}</p>
-                  <p className="text-zinc-500 text-sm mt-2">{edu.location} • {edu.period}</p>
+                <div key={idx} className="scroll-reveal border-l-2 border-zinc-200 pl-6">
+                  <h3 className="text-xl font-bold text-zinc-950 mb-2">{edu.degree}</h3>
+                  <p className="text-zinc-600 font-medium mb-1">{edu.school}</p>
+                  <p className="text-sm text-zinc-500">{edu.location} • {edu.period}</p>
                 </div>
               ))}
             </div>
 
             {/* Achievements */}
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-8 mt-16 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-inner">
-                <Award size={24} />
-              </div>
+            <h2 className="font-display text-4xl md:text-5xl text-zinc-950 mb-16 mt-32 tracking-tight">
               Achievements
             </h2>
-            <ul className="space-y-4">
+            <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
-                <li key={idx} className="flex gap-4 items-start p-4 bg-white border border-zinc-200/60 rounded-2xl shadow-sm">
-                  <span className="text-orange-500 text-xl font-bold">★</span>
+                <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border border-zinc-200 hover-border hover:border-zinc-950">
+                  <span className="text-zinc-950 text-lg mt-0.5">■</span>
                   <span className="text-zinc-700 leading-relaxed">{achieve}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Certifications Box */}
+          {/* Certifications */}
           <div className="flex flex-col h-full min-h-0" style={{ height: rightHeight }}>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-12 flex items-center gap-4 flex-shrink-0">
-              <div className="w-12 h-12 rounded-2xl bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center shadow-inner">
-                <Award size={24} />
-              </div>
+            <h2 className="font-display text-4xl md:text-5xl text-zinc-950 mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="bg-white border border-zinc-200/80 rounded-3xl p-6 md:p-8 shadow-sm flex-1 min-h-0 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent">
-              <div className="space-y-4">
+            <div className="scroll-reveal bg-white border border-zinc-200 p-8 flex-1 min-h-0 overflow-y-auto">
+              <div className="space-y-6">
                 {certifications.map((cert, idx) => (
-                  <div key={idx} className="group relative flex flex-col p-4 rounded-2xl hover:bg-zinc-50 transition-colors border border-transparent hover:border-zinc-200">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-zinc-900 font-semibold group-hover:text-fuchsia-600 transition-colors max-w-[85%]">{cert.name}</h3>
-                      {/* @ts-ignore */}
-                      {cert.image && (
-                        <div className="w-10 h-10 flex-shrink-0 opacity-90 group-hover:opacity-100 transition-opacity ml-2">
-                          {/* @ts-ignore */}
-                          <img src={cert.image} alt={cert.name} className="w-full h-full object-contain drop-shadow-sm rounded-full" />
-                        </div>
-                      )}
+                  <div key={idx} className="group relative pb-6 border-b border-zinc-200 last:border-0">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-zinc-950 font-semibold max-w-[85%]">{cert.name}</h3>
                     </div>
-                    {/* @ts-ignore */}
-                    {cert.skills && <p className="text-xs text-fuchsia-600 mt-1 line-clamp-1" title={cert.skills}>Skills: {cert.skills}</p>}
-                    {/* @ts-ignore */}
-                    {cert.id && <p className="text-xs text-zinc-500 font-mono mt-1">ID: {cert.id}</p>}
+                    {cert.skills && <p className="text-xs text-zinc-500 mb-2">Skills: {cert.skills}</p>}
                     <div className="flex justify-between items-center mt-3">
-                      <span className="text-sm font-medium text-zinc-500 bg-zinc-100 px-3 py-1 rounded-lg">{cert.issuer}</span>
-                      <span className="text-xs text-zinc-400 font-medium">{cert.date}</span>
+                      <span className="text-sm text-zinc-600">{cert.issuer}</span>
+                      <span className="text-xs text-zinc-400">{cert.date}</span>
                     </div>
-                    {/* @ts-ignore */}
-                    {cert.link && (
-                      <a href={cert.link} target="_blank" rel="noopener noreferrer" className="absolute top-4 right-4 text-zinc-400 hover:text-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity" title="View Credential">
-                        <ArrowUpRight size={18} />
-                      </a>
-                    )}
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-sm text-zinc-500 mt-4 italic text-center">Scroll to view all {certifications.length} certifications</p>
+            <p className="text-xs text-zinc-400 mt-4 uppercase tracking-wide">Scroll to view all {certifications.length} certifications</p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="w-full bg-zinc-50 border-t border-zinc-200 pt-20 pb-12 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
-          <div className="inline-flex items-center justify-center p-3 bg-white border border-zinc-200 shadow-sm rounded-2xl mb-4">
-            <Code2 className="text-blue-500 w-8 h-8" />
-          </div>
-          <h2 className="text-3xl font-bold text-zinc-900">Ready to collaborate?</h2>
-          <p className="text-zinc-600 max-w-xl mx-auto">
-            Available for new opportunities. Let's discuss your next project or exploring the frontiers of AI.
+      <footer className="w-full bg-zinc-950 text-white pt-40 pb-24 mt-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+          <p className="text-xs tracking-[0.2em] uppercase text-zinc-500 mb-12">
+            FOR ENQUIRIES OR COLLABORATION REQUESTS, FEEL FREE TO REACH OUT
           </p>
 
-          <div className="flex justify-center gap-4 pt-4">
-            <a href={`mailto:${personalInfo.email}`} className="text-zinc-500 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-full transition-colors">
-              <Mail />
-            </a>
-            <a href={personalInfo.linkedin} className="text-zinc-500 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-full transition-colors">
-              <LinkedInIcon />
-            </a>
-            <a href={personalInfo.github} className="text-zinc-500 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-full transition-colors">
-              <GitHubIcon />
-            </a>
+          <h2 className="font-display text-[15vw] sm:text-[12vw] md:text-[10vw] lg:text-[140px] text-white mb-20 leading-[0.85] tracking-tight">
+            GET IN TOUCH
+          </h2>
+
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t border-zinc-800 pt-12">
+            <div className="space-y-4">
+              <a href={`mailto:${personalInfo.email}`} className="block text-2xl md:text-3xl text-zinc-300 hover:text-white transition-colors duration-200">
+                {personalInfo.email}
+              </a>
+            </div>
+
+            <div className="flex gap-6">
+              <a href={personalInfo.github} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-zinc-500 hover:text-white transition-colors duration-200">
+                GitHub
+              </a>
+              <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-zinc-500 hover:text-white transition-colors duration-200">
+                LinkedIn
+              </a>
+            </div>
           </div>
 
-          <p className="text-zinc-400 text-sm pt-12">
-            © {new Date().getFullYear()} Prabjot Kaur. Built with React & Tailwind CSS.
-          </p>
+          <div className="flex justify-between items-center mt-20 pt-8 border-t border-zinc-800">
+            <p className="text-xs text-zinc-500">
+              ©{new Date().getFullYear()} PRABJOT KAUR
+            </p>
+            <p className="text-xs text-zinc-500 uppercase tracking-wide">
+              DESIGNED & DEVELOPED BY PRABJOT KAUR
+            </p>
+          </div>
         </div>
       </footer>
     </main>

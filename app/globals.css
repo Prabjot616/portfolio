@@ -1,19 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Anybody:wght@100..900&display=swap');
 @import "tailwindcss";
 
 @theme inline {
-  --animate-aurora: aurora 60s linear infinite;
   --animate-marquee: marquee 25s linear infinite;
-  --animate-fade-in-up: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-float: float 6s ease-in-out infinite;
-
-  @keyframes aurora {
-    from {
-      background-position: 50% 50%, 50% 50%;
-    }
-    to {
-      background-position: 350% 50%, 350% 50%;
-    }
-  }
+  --animate-fade-in: fadeIn 0.6s ease-out forwards;
+  --animate-slide-up: slideUp 0.6s ease-out forwards;
 
   @keyframes marquee {
     from {
@@ -24,7 +15,16 @@
     }
   }
 
-  @keyframes fadeInUp {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
     from {
       opacity: 0;
       transform: translateY(20px);
@@ -34,61 +34,68 @@
       transform: translateY(0);
     }
   }
+}
 
-  @keyframes float {
-    0% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
-    100% { transform: translateY(0px) rotate(0deg); }
-  }
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  overflow-x: clip; /* Fixes horizontal scrolling issues */
+  overflow-x: clip;
+  font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+  background: #fafafa;
+  color: #0a0a0a;
 }
 
-/* Glassmorphism utility */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+.font-display {
+  font-family: 'Anybody', -apple-system, system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
 }
 
-/* Aurora Background utility, inspired by 21st.dev / MagicUI */
-.aurora-bg {
-  position: absolute;
-  inset: -50%;
-  z-index: 0;
-  opacity: 0.5;
-  background-image: repeating-linear-gradient(
-      100deg,
-      var(--color-primary) 0%,
-      transparent 10%,
-      transparent 50%
-    ),
-    repeating-linear-gradient(
-      100deg,
-      #3b82f6 10%,
-      transparent 20%,
-      transparent 50%
-    ),
-    repeating-linear-gradient(
-      100deg,
-      #14b8a6 20%,
-      transparent 30%,
-      transparent 50%
-    );
-  background-size: 200% 200%;
-  filter: blur(60px);
-  mask-image: radial-gradient(circle at center, black, transparent 60%);
+.delay-100 {
+  animation-delay: 100ms;
 }
-
-.delay-150 {
-  animation-delay: 150ms;
+.delay-200 {
+  animation-delay: 200ms;
 }
 .delay-300 {
   animation-delay: 300ms;
 }
-.delay-500 {
-  animation-delay: 500ms;
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+/* Scroll reveal */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtle hover transitions */
+.hover-lift {
+  transition: transform 0.25s ease-out, border-color 0.25s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-border {
+  transition: border-color 0.2s ease-out;
+}
+
+.hover-opacity {
+  transition: opacity 0.25s ease-out;
+}
+
+.hover-bg {
+  transition: background-color 0.2s ease-out;
 }
