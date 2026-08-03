@@ -215,7 +215,7 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
       return () => clearInterval(intervalId)
     }, [next, rotationInterval, auto])
 
-    const MotionComponent = motion[as as keyof typeof motion] || motion.p
+    const MotionComponent = (motion[as as keyof typeof motion] || motion.p) as typeof motion.p
 
     return (
       <MotionComponent
