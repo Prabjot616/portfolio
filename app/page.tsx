@@ -201,34 +201,34 @@ export default function Portfolio() {
   if (!mounted) return null;
 
   return (
-    <main className="relative flex flex-col w-full min-h-screen bg-[#f5ede4] overflow-x-clip font-sans">
+    <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
 
       {/* Hero Section */}
       <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-32 md:py-48 lg:py-56">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 order-2 lg:order-1">
-            <h1 className="font-display text-[12vw] sm:text-[10vw] md:text-[8.5vw] lg:text-[100px] xl:text-[120px] text-[#1a1a1a] mb-16 leading-[0.85] tracking-tight animate-slide-up">
+            <h1 className="font-heading text-[12vw] sm:text-[10vw] md:text-[8.5vw] lg:text-[100px] xl:text-[120px] text-[#111111] mb-16 leading-[0.85] tracking-tight animate-slide-up">
               {personalInfo.name}
             </h1>
 
-            <p className="text-base md:text-lg text-[#4a4a4a] max-w-xl mb-20 leading-relaxed animate-slide-up delay-100">
+            <p className="text-base md:text-lg text-[#333333] max-w-xl mb-20 leading-relaxed animate-slide-up delay-100">
               Lead Software Engineer specializing in Shopify app architecture, AI agent systems, and full-stack engineering. Building multi-agent AI pipelines on Google Cloud and leading technical execution for e-commerce platforms.
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 items-start animate-slide-up delay-200">
               <a href={`mailto:${personalInfo.email}`}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-[#1a1a1a] text-[#f5ede4] font-medium rounded-full hover-bg hover:bg-[#2a2a2a] border-2 border-[#1a1a1a]">
-                <Mail className="h-5 w-5" />
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white font-medium rounded-full hover-bg hover:bg-[#000000] border-2 border-[#111111] font-mono text-sm button-press transition-all duration-200">
+                <Mail className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
                 <span>Get in Touch</span>
               </a>
 
               <div className="flex gap-4">
-                <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#3a3a3a] text-[#3a3a3a] hover-border hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-colors duration-200">
+                <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#222222] text-[#222222] hover-border hover:border-[#111111] hover:text-[#111111] transition-all duration-300 icon-hover">
                   <LinkedInIcon />
                 </a>
-                <a href={personalInfo.github} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#3a3a3a] text-[#3a3a3a] hover-border hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-colors duration-200">
+                <a href={personalInfo.github} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#222222] text-[#222222] hover-border hover:border-[#111111] hover:text-[#111111] transition-all duration-300 icon-hover">
                   <GitHubIcon />
                 </a>
               </div>
@@ -239,7 +239,7 @@ export default function Portfolio() {
           <div className="lg:col-span-5 order-1 lg:order-2 animate-fade-in">
             <div className="relative aspect-[4/5] max-w-md mx-auto lg:ml-auto">
               <img
-                src="/images/hero-portrait.jpeg"
+                src="/images/hero-portrait.png"
                 alt="Prabjot Kaur"
                 className="w-full h-full object-contain"
               />
@@ -249,11 +249,11 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Marquee Section */}
-      <section className="py-24 border-y-2 border-[#3a3a3a] bg-[#ebe3d8] overflow-hidden">
+      <section className="py-24 border-y-2 border-[#111111] bg-[#fcfcfc] overflow-hidden">
         <div className="flex overflow-hidden">
           <div className="flex animate-marquee whitespace-nowrap min-w-full">
             {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => (
-              <span key={`1-${index}`} className="mx-3 flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#3a3a3a] text-[#1a1a1a] text-sm font-medium whitespace-nowrap bg-[#f5ede4]">
+              <span key={`1-${index}`} className="mx-3 flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
                 {skill}
               </span>
             ))}
@@ -263,32 +263,32 @@ export default function Portfolio() {
 
       {/* Projects Section */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
-        <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1a1a1a] mb-24 tracking-tight">
+        <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-[#111111] mb-24 tracking-tight">
           Featured Works
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {projects.map((project, idx) => (
-            <div key={idx} className={`${project.colSpan} scroll-reveal group relative flex flex-col bg-[#ebe3d8] border-2 border-[#3a3a3a] p-8 md:p-10 hover-lift hover-border hover:border-[#1a1a1a]`}>
+            <div key={idx} className={`${project.colSpan} scroll-reveal group relative flex flex-col bg-white border-2 border-[#222222] p-8 md:p-10 hover-lift hover-border hover:border-[#111111] transition-all duration-300 cursor-pointer`}>
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold text-[#1a1a1a] mb-2">{project.title}</h3>
-                  <p className="text-sm text-[#4a4a4a] uppercase tracking-wide">{project.subtitle}</p>
+                  <h3 className="text-xl md:text-2xl font-heading text-[#111111] mb-2">{project.title}</h3>
+                  <p className="text-sm text-[#555555] uppercase tracking-wide font-mono">{project.subtitle}</p>
                 </div>
                 {project.link && (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border-2 border-[#3a3a3a] flex items-center justify-center hover-border hover:border-[#1a1a1a] flex-shrink-0 group/link">
-                    <ArrowUpRight size={18} className="text-[#4a4a4a] group-hover/link:text-[#1a1a1a] transition-colors duration-200" />
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border-2 border-[#222222] flex items-center justify-center hover-border hover:border-[#111111] flex-shrink-0 group/link transition-all duration-300">
+                    <ArrowUpRight size={18} className="text-[#333333] group-hover/link:text-[#111111] transition-all duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
                   </a>
                 )}
               </div>
 
-              <p className="text-[#4a4a4a] leading-relaxed flex-grow mb-8">
+              <p className="text-[#333333] leading-relaxed flex-grow mb-8">
                 {project.description}
               </p>
 
               <div className="flex flex-wrap gap-2 mt-auto">
-                {project.tech.map((tech) => (
-                  <span key={tech} className="px-3 py-1.5 border-2 border-[#3a3a3a] text-xs font-medium text-[#1a1a1a]">
+                {project.tech.map((tech, techIdx) => (
+                  <span key={tech} className={`px-3 py-1.5 border-2 border-[#222222] text-xs font-medium text-[#111111] font-mono transition-all duration-200 hover:bg-[#111111] hover:text-white cursor-default stagger-${(techIdx % 6) + 1}`}>
                     {tech}
                   </span>
                 ))}
@@ -300,39 +300,39 @@ export default function Portfolio() {
 
       {/* Experience Timeline */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
-        <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1a1a1a] mb-32 tracking-tight">
+        <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-[#111111] mb-32 tracking-tight">
           Experience
         </h2>
 
-        <div className="relative border-l-2 border-[#3a3a3a] ml-0 space-y-24">
+        <div className="relative border-l-2 border-[#222222] ml-0 space-y-24">
           {experience.map((job, idx) => (
             <div key={idx} className="scroll-reveal relative pl-12 md:pl-16 group">
-              <div className="absolute left-[-9px] top-2 w-4 h-4 bg-[#1a1a1a]" />
+              <div className="absolute left-[-9px] top-2 w-4 h-4 bg-[#111111] transition-all duration-300 group-hover:scale-125 group-hover:rotate-45" />
 
-              <div className="bg-[#ebe3d8] border-2 border-[#3a3a3a] p-8 md:p-10 hover-border group-hover:border-[#1a1a1a]">
+              <div className="bg-white border-2 border-[#222222] p-8 md:p-10 hover-border group-hover:border-[#111111] transition-all duration-300 hover:shadow-lg">
                 <div className="flex flex-col md:flex-row md:items-start justify-between mb-6 gap-3">
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-[#1a1a1a] mb-2">{job.title}</h3>
-                    <h4 className="text-base text-[#4a4a4a] font-medium">{job.company}</h4>
+                    <h3 className="text-2xl md:text-3xl font-heading text-[#111111] mb-2">{job.title}</h3>
+                    <h4 className="text-base text-[#333333] font-medium">{job.company}</h4>
                   </div>
-                  <span className="inline-block text-sm text-[#4a4a4a] uppercase tracking-wide">
+                  <span className="inline-block text-sm text-[#555555] uppercase tracking-wide font-mono">
                     {job.period}
                   </span>
                 </div>
 
                 <ul className="space-y-3 mb-6">
                   {job.points.map((point, i) => (
-                    <li key={i} className="text-[#4a4a4a] flex items-start gap-3 leading-relaxed">
-                      <span className="text-[#3a3a3a] mt-0.5 block w-4 flex-shrink-0">—</span>
+                    <li key={i} className="text-[#333333] flex items-start gap-3 leading-relaxed">
+                      <span className="text-[#222222] mt-0.5 block w-4 flex-shrink-0">—</span>
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
 
                 {job.skills && (
-                  <div className="pt-6 border-t-2 border-[#3a3a3a] flex items-center gap-3">
-                    <span className="text-xs text-[#3a3a3a] uppercase tracking-wider">Skills</span>
-                    <p className="text-sm text-[#1a1a1a]">{job.skills}</p>
+                  <div className="pt-6 border-t-2 border-[#dddddd] flex items-center gap-3">
+                    <span className="text-xs text-[#555555] uppercase tracking-wider font-mono">Skills</span>
+                    <p className="text-sm text-[#111111]">{job.skills}</p>
                   </div>
                 )}
               </div>
@@ -342,33 +342,33 @@ export default function Portfolio() {
       </section>
 
       {/* Education & Certifications */}
-      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48 border-t-2 border-[#3a3a3a]">
+      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48 border-t-2 border-[#222222]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
 
           {/* Education */}
           <div ref={leftColRef}>
-            <h2 className="font-display text-4xl md:text-5xl text-[#1a1a1a] mb-24 tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight">
               Education
             </h2>
             <div className="space-y-16">
               {education.map((edu, idx) => (
-                <div key={idx} className="scroll-reveal border-l-2 border-[#3a3a3a] pl-6">
-                  <h3 className="text-xl font-bold text-[#1a1a1a] mb-2">{edu.degree}</h3>
-                  <p className="text-[#4a4a4a] font-medium mb-1">{edu.school}</p>
-                  <p className="text-sm text-[#4a4a4a]">{edu.location} • {edu.period}</p>
+                <div key={idx} className="scroll-reveal border-l-2 border-[#222222] pl-6">
+                  <h3 className="text-xl font-heading text-[#111111] mb-2">{edu.degree}</h3>
+                  <p className="text-[#333333] font-medium mb-1">{edu.school}</p>
+                  <p className="text-sm text-[#555555] font-mono">{edu.location} • {edu.period}</p>
                 </div>
               ))}
             </div>
 
             {/* Achievements */}
-            <h2 className="font-display text-4xl md:text-5xl text-[#1a1a1a] mb-16 mt-32 tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-16 mt-32 tracking-tight">
               Achievements
             </h2>
             <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
-                <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-[#ebe3d8] border-2 border-[#3a3a3a] hover-border hover:border-[#1a1a1a]">
-                  <span className="text-[#1a1a1a] text-lg mt-0.5">■</span>
-                  <span className="text-[#1a1a1a] leading-relaxed">{achieve}</span>
+                <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
+                  <span className="text-[#111111] text-lg mt-0.5 transition-transform duration-300 group-hover:scale-125">■</span>
+                  <span className="text-[#111111] leading-relaxed">{achieve}</span>
                 </li>
               ))}
             </ul>
@@ -376,63 +376,63 @@ export default function Portfolio() {
 
           {/* Certifications */}
           <div className="flex flex-col h-full min-h-0" style={{ height: rightHeight }}>
-            <h2 className="font-display text-4xl md:text-5xl text-[#1a1a1a] mb-24 tracking-tight flex-shrink-0">
+            <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="scroll-reveal bg-[#ebe3d8] border-2 border-[#3a3a3a] p-8 flex-1 min-h-0 overflow-y-auto">
+            <div className="scroll-reveal bg-white border-2 border-[#222222] p-8 flex-1 min-h-0 overflow-y-auto">
               <div className="space-y-6">
                 {certifications.map((cert, idx) => (
-                  <div key={idx} className="group relative pb-6 border-b-2 border-[#3a3a3a] last:border-0">
+                  <div key={idx} className="group relative pb-6 border-b-2 border-[#dddddd] last:border-0">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-[#1a1a1a] font-semibold max-w-[85%]">{cert.name}</h3>
+                      <h3 className="text-[#111111] font-heading text-base max-w-[85%]">{cert.name}</h3>
                     </div>
-                    {cert.skills && <p className="text-xs text-[#4a4a4a] mb-2">Skills: {cert.skills}</p>}
+                    {cert.skills && <p className="text-xs text-[#555555] mb-2 font-mono">Skills: {cert.skills}</p>}
                     <div className="flex justify-between items-center mt-3">
-                      <span className="text-sm text-[#4a4a4a]">{cert.issuer}</span>
-                      <span className="text-xs text-[#4a4a4a]">{cert.date}</span>
+                      <span className="text-sm text-[#333333]">{cert.issuer}</span>
+                      <span className="text-xs text-[#555555] font-mono">{cert.date}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-xs text-[#4a4a4a] mt-4 uppercase tracking-wide">Scroll to view all {certifications.length} certifications</p>
+            <p className="text-xs text-[#555555] mt-4 uppercase tracking-wide font-mono">Scroll to view all {certifications.length} certifications</p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="w-full bg-[#1a1a1a] text-[#f5ede4] pt-40 pb-24 mt-32 border-t-2 border-[#1a1a1a]">
+      <footer className="w-full bg-[#111111] text-white pt-40 pb-24 mt-32 border-t-2 border-[#111111]">
         <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
-          <p className="text-xs tracking-[0.2em] uppercase text-[#8a8a8a] mb-12">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#888888] mb-12 font-mono">
             FOR ENQUIRIES OR COLLABORATION REQUESTS, FEEL FREE TO REACH OUT
           </p>
 
-          <h2 className="font-display text-[15vw] sm:text-[12vw] md:text-[10vw] lg:text-[140px] text-[#f5ede4] mb-20 leading-[0.85] tracking-tight">
+          <h2 className="font-heading text-[15vw] sm:text-[12vw] md:text-[10vw] lg:text-[140px] text-white mb-20 leading-[0.85] tracking-tight">
             GET IN TOUCH
           </h2>
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t-2 border-[#3a3a3a] pt-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t-2 border-[#333333] pt-12">
             <div className="space-y-4">
-              <a href={`mailto:${personalInfo.email}`} className="block text-2xl md:text-3xl text-[#c5bdb0] hover:text-[#f5ede4] transition-colors duration-200">
+              <a href={`mailto:${personalInfo.email}`} className="block text-2xl md:text-3xl text-[#dddddd] hover:text-white transition-all duration-300 link-underline">
                 {personalInfo.email}
               </a>
             </div>
 
             <div className="flex gap-6">
-              <a href={personalInfo.github} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-[#8a8a8a] hover:text-[#f5ede4] transition-colors duration-200">
+              <a href={personalInfo.github} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-[#888888] hover:text-white transition-all duration-300 font-mono link-underline">
                 GitHub
               </a>
-              <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-[#8a8a8a] hover:text-[#f5ede4] transition-colors duration-200">
+              <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="text-sm uppercase tracking-wide text-[#888888] hover:text-white transition-all duration-300 font-mono link-underline">
                 LinkedIn
               </a>
             </div>
           </div>
 
-          <div className="flex justify-between items-center mt-20 pt-8 border-t-2 border-[#3a3a3a]">
-            <p className="text-xs text-[#8a8a8a]">
+          <div className="flex justify-between items-center mt-20 pt-8 border-t-2 border-[#333333]">
+            <p className="text-xs text-[#888888] font-mono">
               ©{new Date().getFullYear()} PRABJOT KAUR
             </p>
-            <p className="text-xs text-[#8a8a8a] uppercase tracking-wide">
+            <p className="text-xs text-[#888888] uppercase tracking-wide font-mono">
               DESIGNED & DEVELOPED BY PRABJOT KAUR
             </p>
           </div>
