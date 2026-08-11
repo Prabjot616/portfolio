@@ -63,6 +63,46 @@ const AnimatedSignature = () => {
   );
 };
 
+const SquiggleDivider = ({ className = '' }: { className?: string }) => (
+  <div className={`flex justify-center text-[#111111] ${className}`} aria-hidden="true">
+    <svg viewBox="0 0 260 20" width="220" height="18">
+      <path
+        d="M2,11 C24,1 34,21 54,10 C72,0 82,20 100,9 C118,-1 130,19 148,10 C166,1 178,19 196,9 C212,1 224,17 238,9 C246,5 252,10 258,8"
+        fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"
+      />
+    </svg>
+  </div>
+);
+
+const cardFramePaths = [
+  'M3,4 C30,1 70,0.5 97,4 C98.5,25 98,65 97,96 C70,99 30,99.5 3,96 C1.5,75 2,30 3,4 Z',
+  'M4,3 C35,0.5 68,1.5 96,5 C99,30 97.5,68 96,97 C65,98.5 32,99 4,95 C2,70 3,28 4,3 Z',
+  'M2,6 C28,2 72,2.5 98,6 C96.5,32 97,66 98,94 C72,98 28,97.5 2,94 C3.5,68 3,30 2,6 Z',
+];
+
+const CardFrame = ({ variant }: { variant: number }) => (
+  <svg
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 h-full w-full text-[#222222] transition-colors duration-300 group-hover:text-[#111111]"
+  >
+    <path
+      d={cardFramePaths[variant % cardFramePaths.length]}
+      fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const TimelinePin = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" className="absolute left-[-12px] top-2 transition-transform duration-300 group-hover:scale-125">
+    <path
+      d="M11,2.3 C15.4,1.6 20,4.9 19.7,10.3 C19.4,15.9 15.3,19.6 10.6,19.7 C5.7,19.8 1.9,15.6 2.3,10.6 C2.6,6.4 6.2,2.9 11,2.3 Z"
+      fill="white" stroke="#111111" strokeWidth="1.6"
+    />
+  </svg>
+);
+
 const personalInfo = {
   name: 'PRABJOT KAUR',
   title: 'Lead Software Engineer',
@@ -332,34 +372,39 @@ export default function Portfolio() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, idx) => (
-            <div key={idx} className="col-span-1 scroll-reveal group relative flex flex-col bg-white border-2 border-[#222222] p-8 md:p-10 hover-lift hover-border hover:border-[#111111] transition-all duration-300 cursor-pointer">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-xl md:text-2xl font-heading text-[#111111] mb-2">{project.title}</h3>
-                  <p className="text-sm text-[#555555] uppercase tracking-wide font-mono">{project.subtitle}</p>
+            <div key={idx} className="col-span-1 scroll-reveal group relative hover-lift transition-all duration-300 cursor-pointer p-[5px]">
+              <CardFrame variant={idx} />
+              <div className="flex flex-col h-full bg-white p-8 md:p-10">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-heading text-[#111111] mb-2">{project.title}</h3>
+                    <p className="text-sm text-[#555555] uppercase tracking-wide font-mono">{project.subtitle}</p>
+                  </div>
+                  {project.link && (
+                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border-2 border-[#222222] flex items-center justify-center hover-border hover:border-[#111111] flex-shrink-0 group/link transition-all duration-300">
+                      <ArrowUpRight size={18} className="text-[#333333] group-hover/link:text-[#111111] transition-all duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                    </a>
+                  )}
                 </div>
-                {project.link && (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border-2 border-[#222222] flex items-center justify-center hover-border hover:border-[#111111] flex-shrink-0 group/link transition-all duration-300">
-                    <ArrowUpRight size={18} className="text-[#333333] group-hover/link:text-[#111111] transition-all duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-                  </a>
-                )}
-              </div>
 
-              <p className="text-[#333333] leading-relaxed flex-grow mb-8">
-                {project.description}
-              </p>
+                <p className="text-[#333333] leading-relaxed flex-grow mb-8">
+                  {project.description}
+                </p>
 
-              <div className="flex flex-wrap gap-2 mt-auto">
-                {project.tech.map((tech, techIdx) => (
-                  <span key={tech} className={`px-3 py-1.5 border-2 border-[#222222] text-xs font-medium text-[#111111] font-mono transition-all duration-200 hover:bg-[#111111] hover:text-white cursor-default stagger-${(techIdx % 6) + 1}`}>
-                    {tech}
-                  </span>
-                ))}
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {project.tech.map((tech, techIdx) => (
+                    <span key={tech} className={`px-3 py-1.5 border-2 border-[#222222] text-xs font-medium text-[#111111] font-mono transition-all duration-200 hover:bg-[#111111] hover:text-white cursor-default stagger-${(techIdx % 6) + 1}`}>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      <SquiggleDivider />
 
       {/* Experience Timeline */}
       <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
@@ -367,10 +412,10 @@ export default function Portfolio() {
           Experience
         </h2>
 
-        <div className="relative border-l-2 border-[#222222] ml-0 space-y-24">
+        <div className="relative border-l-2 border-dashed border-[#222222] ml-0 space-y-24">
           {experience.map((job, idx) => (
             <div key={idx} className="scroll-reveal relative pl-12 md:pl-16 group">
-              <div className="absolute left-[-9px] top-2 w-4 h-4 bg-[#111111] transition-all duration-300 group-hover:scale-125 group-hover:rotate-45" />
+              <TimelinePin />
 
               <div className="bg-white border-2 border-[#222222] p-8 md:p-10 hover-border group-hover:border-[#111111] transition-all duration-300 hover:shadow-lg">
                 <div className="flex flex-col md:flex-row md:items-start justify-between mb-6 gap-3">
@@ -404,8 +449,10 @@ export default function Portfolio() {
         </div>
       </section>
 
+      <SquiggleDivider />
+
       {/* Education & Certifications */}
-      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48 border-t-2 border-[#222222]">
+      <section className="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-48">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
 
           {/* Education */}
