@@ -129,7 +129,7 @@ const projects = [
     subtitle: 'Cohort 2, Google APAC Hackathon',
     description: 'Joint project with colleague Sougata Chattapadhay (submitted under participant name Dhatri). CrowdGuard detects and flags crowd safety risks in real-time using computer vision and generative AI to interpret live video feeds. Runs on Gemini 2.5 Flash via Vertex AI for scene analysis, with Cloud Run for serving, AlloyDB for structured data, and Cloud Storage for media.',
     tech: ['Vertex AI', 'Gemini 2.5 Flash', 'Cloud Run', 'AlloyDB', 'Cloud Storage'],
-    colSpan: 'col-span-1 md:col-span-2',
+    colSpan: 'col-span-1',
   },
   {
     title: 'Multi-Agent AI SEO/GEO Analysis Pipeline',
@@ -143,7 +143,7 @@ const projects = [
     subtitle: 'E-commerce Platform Development',
     description: 'Led architecture and development for Shopify applications serving e-commerce merchants. Coordinated platform updates, team execution, and infrastructure reliability across multiple production apps.',
     tech: ['Shopify APIs', 'React', 'Node.js', 'PostgreSQL'],
-    colSpan: 'col-span-1 md:col-span-2',
+    colSpan: 'col-span-1',
   },
   {
     title: 'Pomodoro Pulse',
@@ -151,6 +151,14 @@ const projects = [
     description: 'Published a Pomodoro productivity timer mobile application on Google Play Store built with React Native.',
     tech: ['React Native', 'Mobile Development'],
     link: 'https://play.google.com/store/apps/details?id=com.pomodoropulse',
+    colSpan: 'col-span-1',
+  },
+  {
+    title: 'Bouncy Birdie: Casual Mobile Game',
+    subtitle: 'Amazon Appstore - July 2021',
+    description: 'Solo-developed casual tap-tap game where players navigate a bird through obstacles. A lightweight, stress-relieving experience designed for Android (min. 4.4). Self-published independently on the Amazon Appstore.',
+    tech: ['Android', 'Game Development', 'Solo Project'],
+    link: 'https://www.amazon.com/Prabjot-Kaur-Bouncy-Birdie/dp/B098R96DX2',
     colSpan: 'col-span-1',
   },
 ];
@@ -322,9 +330,9 @@ export default function Portfolio() {
           Featured Works
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, idx) => (
-            <div key={idx} className={`${project.colSpan} scroll-reveal group relative flex flex-col bg-white border-2 border-[#222222] p-8 md:p-10 hover-lift hover-border hover:border-[#111111] transition-all duration-300 cursor-pointer`}>
+            <div key={idx} className="col-span-1 scroll-reveal group relative flex flex-col bg-white border-2 border-[#222222] p-8 md:p-10 hover-lift hover-border hover:border-[#111111] transition-all duration-300 cursor-pointer">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h3 className="text-xl md:text-2xl font-heading text-[#111111] mb-2">{project.title}</h3>
