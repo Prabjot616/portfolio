@@ -15,6 +15,54 @@ const GitHubIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const AnimatedSignature = () => {
+  return (
+    <div className="inline-block w-full max-w-4xl">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" className="w-full h-auto" preserveAspectRatio="xMinYMin meet">
+        <style>
+          {`
+            .signature-text {
+              font-family: 'Caveat', cursive;
+              font-size: 100px;
+              fill: transparent;
+              stroke: #111111;
+              stroke-width: 2.5;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              stroke-dasharray: 1000;
+              stroke-dashoffset: 1000;
+              text-anchor: start;
+            }
+
+            .first-name {
+              animation: write-and-fill 1.8s ease-in-out forwards;
+              animation-delay: 0.2s;
+            }
+
+            .last-name {
+              animation: write-and-fill 1.5s ease-in-out forwards;
+              animation-delay: 1.6s;
+            }
+
+            @keyframes write-and-fill {
+              50% {
+                stroke-dashoffset: 0;
+                fill: rgba(17, 17, 17, 0);
+              }
+              100% {
+                stroke-dashoffset: 0;
+                fill: #111111;
+              }
+            }
+          `}
+        </style>
+        <text x="10" y="100" className="signature-text first-name">Prabjot</text>
+        <text x="10" y="220" className="signature-text last-name">Kaur</text>
+      </svg>
+    </div>
+  );
+};
+
 const personalInfo = {
   name: 'PRABJOT KAUR',
   title: 'Lead Software Engineer',
@@ -77,18 +125,25 @@ const experience = [
 
 const projects = [
   {
+    title: 'CrowdGuard: Real-Time Crowd Safety Monitoring',
+    subtitle: 'Cohort 2, Google APAC Hackathon',
+    description: 'Joint project with colleague Sougata Chattapadhay (submitted under participant name Dhatri). CrowdGuard detects and flags crowd safety risks in real-time using computer vision and generative AI to interpret live video feeds. Runs on Gemini 2.5 Flash via Vertex AI for scene analysis, with Cloud Run for serving, AlloyDB for structured data, and Cloud Storage for media.',
+    tech: ['Vertex AI', 'Gemini 2.5 Flash', 'Cloud Run', 'AlloyDB', 'Cloud Storage'],
+    colSpan: 'col-span-1 md:col-span-2',
+  },
+  {
     title: 'Multi-Agent AI SEO/GEO Analysis Pipeline',
     subtitle: 'Top 100 - Google APAC Hackathon',
     description: 'Built a multi-agent AI system on Google Cloud (ADK, Vertex AI, AlloyDB) that analyzes websites and generates comprehensive SEO, GEO, and competitor insights. Placed in top 100 at Google APAC hackathon.',
     tech: ['Google Cloud', 'Vertex AI', 'AlloyDB', 'Python', 'AI Agents'],
-    colSpan: 'col-span-1 md:col-span-2',
+    colSpan: 'col-span-1',
   },
   {
     title: 'Shopify App Ecosystem',
     subtitle: 'E-commerce Platform Development',
     description: 'Led architecture and development for Shopify applications serving e-commerce merchants. Coordinated platform updates, team execution, and infrastructure reliability across multiple production apps.',
     tech: ['Shopify APIs', 'React', 'Node.js', 'PostgreSQL'],
-    colSpan: 'col-span-1',
+    colSpan: 'col-span-1 md:col-span-2',
   },
   {
     title: 'Pomodoro Pulse',
@@ -96,7 +151,7 @@ const projects = [
     description: 'Published a Pomodoro productivity timer mobile application on Google Play Store built with React Native.',
     tech: ['React Native', 'Mobile Development'],
     link: 'https://play.google.com/store/apps/details?id=com.pomodoropulse',
-    colSpan: 'col-span-1 md:col-span-3',
+    colSpan: 'col-span-1',
   },
 ];
 
@@ -204,15 +259,15 @@ export default function Portfolio() {
     <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
 
       {/* Hero Section */}
-      <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-32 md:py-48 lg:py-56">
+      <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-20 md:py-32 lg:py-40">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 order-2 lg:order-1">
-            <h1 className="font-heading text-[12vw] sm:text-[10vw] md:text-[8.5vw] lg:text-[100px] xl:text-[120px] text-[#111111] mb-16 leading-[0.85] tracking-tight animate-slide-up">
-              {personalInfo.name}
-            </h1>
+            <div className="mb-8">
+              <AnimatedSignature />
+            </div>
 
-            <p className="text-base md:text-lg text-[#333333] max-w-xl mb-20 leading-relaxed animate-slide-up delay-100">
+            <p className="text-base md:text-lg text-[#333333] max-w-xl mb-12 leading-relaxed animate-slide-up delay-100">
               Lead Software Engineer specializing in Shopify app architecture, AI agent systems, and full-stack engineering. Building multi-agent AI pipelines on Google Cloud and leading technical execution for e-commerce platforms.
             </p>
 
