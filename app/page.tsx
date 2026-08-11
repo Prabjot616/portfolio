@@ -103,6 +103,70 @@ const TimelinePin = () => (
   </svg>
 );
 
+const ACCENT = '#D6431F';
+
+// Marker-style scribble underline. Uses a tiled SVG background (not an overlay)
+// so it keeps working correctly if the wrapped phrase wraps across lines.
+const scribbleTile =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 14' width='40' height='14'%3E%3Cpath d='M0,7 C6,1 14,1 20,7 C26,13 34,13 40,7' fill='none' stroke='%23D6431F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E";
+
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+  <span
+    style={{
+      backgroundImage: `url("${scribbleTile}")`,
+      backgroundRepeat: 'repeat-x',
+      backgroundPosition: '0 100%',
+      backgroundSize: '34px 12px',
+      paddingBottom: '3px',
+      boxDecorationBreak: 'clone',
+      WebkitBoxDecorationBreak: 'clone',
+    } as React.CSSProperties}
+  >
+    {children}
+  </span>
+);
+
+// Renders text with one verbatim substring wrapped in the scribble Highlight.
+const withHighlight = (text: string, phrase?: string) => {
+  if (!phrase) return text;
+  const i = text.indexOf(phrase);
+  if (i === -1) return text;
+  return (
+    <>
+      {text.slice(0, i)}
+      <Highlight>{phrase}</Highlight>
+      {text.slice(i + phrase.length)}
+    </>
+  );
+};
+
+// Hand-drawn circle looped around a single standout item in a row of equals.
+const CircleLoop = ({ children }: { children: React.ReactNode }) => (
+  <span className="relative inline-flex">
+    {children}
+    <svg
+      viewBox="0 0 140 70" preserveAspectRatio="none" aria-hidden="true"
+      className="pointer-events-none absolute text-[#D6431F]"
+      style={{ left: '-8px', right: '-8px', top: '-6px', bottom: '-6px', width: 'calc(100% + 16px)', height: 'calc(100% + 12px)' }}
+    >
+      <path
+        d="M8,45 C5,18 30,4 68,4 C108,4 128,16 124,42 C120,60 96,66 60,66 C28,66 12,58 8,46 C7,44 8,42 10,44"
+        fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+      />
+    </svg>
+  </span>
+);
+
+// Pinned star marking a featured project or certification.
+const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 46 46" aria-hidden="true" className={className}>
+    <path
+      d="M23,4 C24.5,12 22,15 30,16.5 C23,19 25,23 23,31 C21.5,23 19,20 12,17.5 C19,15.5 17,12 23,4 Z"
+      fill="#F6DCCE" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const personalInfo = {
   name: 'PRABJOT KAUR',
   title: 'Lead Software Engineer',
@@ -170,6 +234,7 @@ const projects = [
     description: 'Joint project with colleague Sougata Chattapadhay (submitted under participant name Dhatri). CrowdGuard detects and flags crowd safety risks in real-time using computer vision and generative AI to interpret live video feeds. Runs on Gemini 2.5 Flash via Vertex AI for scene analysis, with Cloud Run for serving, AlloyDB for structured data, and Cloud Storage for media.',
     tech: ['Vertex AI', 'Gemini 2.5 Flash', 'Cloud Run', 'AlloyDB', 'Cloud Storage'],
     colSpan: 'col-span-1',
+    highlight: 'detects and flags crowd safety risks in real-time using computer vision and generative AI',
   },
   {
     title: 'Multi-Agent AI SEO/GEO Analysis Pipeline',
@@ -177,6 +242,8 @@ const projects = [
     description: 'Built a multi-agent AI system on Google Cloud (ADK, Vertex AI, AlloyDB) that analyzes websites and generates comprehensive SEO, GEO, and competitor insights. Placed in top 100 at Google APAC hackathon.',
     tech: ['Google Cloud', 'Vertex AI', 'AlloyDB', 'Python', 'AI Agents'],
     colSpan: 'col-span-1',
+    highlight: 'Placed in top 100 at Google APAC hackathon',
+    featured: true,
   },
   {
     title: 'Shopify App Ecosystem',
@@ -184,6 +251,7 @@ const projects = [
     description: 'Led architecture and development for Shopify applications serving e-commerce merchants. Coordinated platform updates, team execution, and infrastructure reliability across multiple production apps.',
     tech: ['Shopify APIs', 'React', 'Node.js', 'PostgreSQL'],
     colSpan: 'col-span-1',
+    highlight: 'across multiple production apps',
   },
   {
     title: 'Pomodoro Pulse',
@@ -192,6 +260,7 @@ const projects = [
     tech: ['React Native', 'Mobile Development'],
     link: 'https://play.google.com/store/apps/details?id=com.pomodoropulse',
     colSpan: 'col-span-1',
+    highlight: 'Google Play Store',
   },
   {
     title: 'Bouncy Birdie: Casual Mobile Game',
@@ -200,6 +269,7 @@ const projects = [
     tech: ['Android', 'Game Development', 'Solo Project'],
     link: 'https://www.amazon.com/Prabjot-Kaur-Bouncy-Birdie/dp/B098R96DX2',
     colSpan: 'col-span-1',
+    highlight: 'Self-published independently',
   },
 ];
 
@@ -210,6 +280,10 @@ const allSkills = [
   'Python', 'JavaScript', 'PostgreSQL', 'AlloyDB', 'MySQL',
   'Docker', 'CI/CD', 'Server Hardening', 'Infrastructure', 'Git'
 ];
+
+const circledSkills = new Set([
+  'Shopify App Development', 'Infrastructure', 'Node.js', 'React', 'Team Leadership', 'Product Engineering'
+]);
 
 const education = [
   {
@@ -227,8 +301,8 @@ const education = [
 ];
 
 const certifications = [
-  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)' },
-  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI' },
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true },
+  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true },
   { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)' },
   { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture' },
   { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)' },
@@ -355,11 +429,18 @@ export default function Portfolio() {
       <section className="py-24 border-y-2 border-[#111111] bg-[#fcfcfc] overflow-hidden">
         <div className="flex overflow-hidden">
           <div className="flex animate-marquee whitespace-nowrap min-w-full">
-            {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => (
-              <span key={`1-${index}`} className="mx-3 flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
-                {skill}
-              </span>
-            ))}
+            {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => {
+              const pill = (
+                <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
+                  {skill}
+                </span>
+              );
+              return (
+                <span key={`1-${index}`} className="mx-3">
+                  {circledSkills.has(skill) ? <CircleLoop>{pill}</CircleLoop> : pill}
+                </span>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -388,7 +469,7 @@ export default function Portfolio() {
                 </div>
 
                 <p className="text-[#333333] leading-relaxed flex-grow mb-8">
-                  {project.description}
+                  {withHighlight(project.description, project.highlight)}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-auto">
@@ -399,6 +480,9 @@ export default function Portfolio() {
                   ))}
                 </div>
               </div>
+              {project.featured && (
+                <CornerStar className="absolute -top-4 -right-3 z-10" />
+              )}
             </div>
           ))}
         </div>
@@ -494,7 +578,10 @@ export default function Portfolio() {
                 {certifications.map((cert, idx) => (
                   <div key={idx} className="group relative pb-6 border-b-2 border-[#dddddd] last:border-0">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-[#111111] font-heading text-base max-w-[85%]">{cert.name}</h3>
+                      <h3 className="text-[#111111] font-heading text-base max-w-[85%] flex items-center gap-1.5">
+                        {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
+                        {cert.name}
+                      </h3>
                     </div>
                     {cert.skills && <p className="text-xs text-[#555555] mb-2 font-mono">Skills: {cert.skills}</p>}
                     <div className="flex justify-between items-center mt-3">
