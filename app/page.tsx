@@ -140,9 +140,17 @@ const withHighlight = (text: string, phrase?: string) => {
   );
 };
 
-// Hand-drawn circle looped around a single standout item in a row of equals.
-const CircleLoop = ({ children }: { children: React.ReactNode }) => (
+// Hand-drawn circle looped around a single standout item in a row of equals,
+// with an optional handwritten note pointing at it.
+const CircleLoop = ({ children, label, raised = false }: { children: React.ReactNode; label?: string; raised?: boolean }) => (
   <span className="relative inline-flex">
+    {label && (
+      <span
+        className={`pointer-events-none absolute left-1 whitespace-nowrap font-heading text-lg leading-none text-[#D6431F] ${raised ? '-top-9' : '-top-6'}`}
+      >
+        {label} ↴
+      </span>
+    )}
     {children}
     <svg
       viewBox="0 0 140 70" preserveAspectRatio="none" aria-hidden="true"
@@ -281,9 +289,16 @@ const allSkills = [
   'Docker', 'CI/CD', 'Server Hardening', 'Infrastructure', 'Git'
 ];
 
-const circledSkills = new Set([
-  'Shopify App Development', 'Infrastructure', 'Node.js', 'React', 'Team Leadership', 'Product Engineering'
-]);
+// Adjacent circled pills (Team Leadership/Product Engineering, React/Node.js) get
+// staggered label heights via `raised` so the handwritten notes don't collide.
+const skillHighlights: Record<string, { label: string; raised?: boolean }> = {
+  'Shopify App Development': { label: 'core focus' },
+  'Product Engineering': { label: 'day job' },
+  'Team Leadership': { label: 'leading now', raised: true },
+  'Node.js': { label: 'backend' },
+  'React': { label: 'front-end', raised: true },
+  'Infrastructure': { label: 'own this' },
+};
 
 const education = [
   {
@@ -428,16 +443,17 @@ export default function Portfolio() {
       {/* Skills Marquee Section */}
       <section className="py-24 border-y-2 border-[#111111] bg-[#fcfcfc] overflow-hidden">
         <div className="flex overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap min-w-full">
+          <div className="flex animate-marquee whitespace-nowrap min-w-full pt-12 hover:[animation-play-state:paused]">
             {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => {
               const pill = (
                 <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
                   {skill}
                 </span>
               );
+              const highlight = skillHighlights[skill];
               return (
                 <span key={`1-${index}`} className="mx-3">
-                  {circledSkills.has(skill) ? <CircleLoop>{pill}</CircleLoop> : pill}
+                  {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
                 </span>
               );
             })}
