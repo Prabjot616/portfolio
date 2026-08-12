@@ -177,6 +177,112 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
   </svg>
 );
 
+// Skills strip: auto-scrolls at a steady pace, but hovering, dragging (mouse),
+// wheel/trackpad, or touch all take over immediately. Two duplicated copies of
+// the list let scrollLeft wrap seamlessly in either direction, so it never
+// snaps or resets — auto-scroll just picks back up wherever the user left it.
+const SkillsMarquee = () => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollRef = useRef(0);
+  const pausedUntilRef = useRef(0);
+
+  const items = [...allSkills, ...allSkills];
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const speed = 36; // px/second
+    let last = performance.now();
+    let raf = requestAnimationFrame(tick);
+
+    function tick(now: number) {
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      const shouldRun = !draggingRef.current && !hoveredRef.current && now > pausedUntilRef.current;
+      if (shouldRun) {
+        const half = track!.scrollWidth / 2;
+        track!.scrollLeft += speed * dt;
+        if (half > 0 && track!.scrollLeft >= half) track!.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const settleAfterInteraction = () => {
+    pausedUntilRef.current = performance.now() + 1800;
+  };
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    draggingRef.current = true;
+    dragStartXRef.current = e.clientX;
+    dragStartScrollRef.current = trackRef.current?.scrollLeft ?? 0;
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (!draggingRef.current || !track) return;
+    const half = track.scrollWidth / 2;
+    let desired = dragStartScrollRef.current - (e.clientX - dragStartXRef.current);
+    // Rebase rather than let a negative assignment get clamped to 0 by the
+    // DOM (which would silently lose how far past the edge the drag went,
+    // and get the strip stuck against that edge). 0 and `half` show
+    // pixel-identical content since the list is duplicated, so shifting the
+    // whole reference frame by `half` here is invisible to the user.
+    if (half > 0) {
+      while (desired < 0) { desired += half; dragStartScrollRef.current += half; }
+      while (desired >= half) { desired -= half; dragStartScrollRef.current -= half; }
+    }
+    track.scrollLeft = desired;
+  };
+  const endDrag = () => {
+    if (draggingRef.current) settleAfterInteraction();
+    draggingRef.current = false;
+  };
+  // Backstop for native touch/trackpad scrolling: relocates away from the
+  // hard-clamped edges so momentum scrolling never dead-ends against them.
+  const onScroll = () => {
+    const track = trackRef.current;
+    if (!track || draggingRef.current) return;
+    const half = track.scrollWidth / 2;
+    if (half <= 0) return;
+    if (track.scrollLeft >= half) track.scrollLeft -= half;
+    else if (track.scrollLeft <= 0) track.scrollLeft = half - 1;
+  };
+
+  return (
+    <div
+      ref={trackRef}
+      className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: 'pan-x' }}
+      onMouseEnter={() => { hoveredRef.current = true; }}
+      onMouseLeave={() => { hoveredRef.current = false; endDrag(); }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={endDrag}
+      onScroll={onScroll}
+      onTouchStart={settleAfterInteraction}
+      onTouchEnd={settleAfterInteraction}
+    >
+      {items.map((skill, index) => {
+        const pill = (
+          <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge">
+            {skill}
+          </span>
+        );
+        const highlight = skillHighlights[skill];
+        return (
+          <span key={index} className="mx-3 flex-shrink-0">
+            {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
+          </span>
+        );
+      })}
+    </div>
+  );
+};
+
 // Hand-drawn checkmark, replaces the solid square achievement bullet.
 const CheckMark = () => (
   <svg width="20" height="18" viewBox="0 0 20 16" aria-hidden="true" className="flex-shrink-0 mt-1 transition-transform duration-300 group-hover:scale-125">
@@ -475,23 +581,7 @@ export default function Portfolio() {
 
       {/* Skills Marquee Section */}
       <section className="py-24 border-y-2 border-[#111111] bg-[#fcfcfc] overflow-hidden">
-        <div className="flex overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap min-w-full pt-12 hover:[animation-play-state:paused]">
-            {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => {
-              const pill = (
-                <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
-                  {skill}
-                </span>
-              );
-              const highlight = skillHighlights[skill];
-              return (
-                <span key={`1-${index}`} className="mx-3">
-                  {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
-                </span>
-              );
-            })}
-          </div>
-        </div>
+        <SkillsMarquee />
       </section>
 
       {/* Projects Section */}
