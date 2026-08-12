@@ -469,21 +469,21 @@ const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; ti
       aria-modal="true"
       aria-label={`Photo: ${photo.title}`}
     >
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label="Close"
-        className="absolute top-6 right-6 flex items-center justify-center w-11 h-11 rounded-full border-2 border-white text-white hover:bg-white hover:text-[#111111] transition-all duration-200"
-      >
-        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-          <path d="M2,2 L16,16 M16,2 L2,16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </button>
       <div
-        className="bg-white shadow-2xl animate-lightbox-in"
+        className="relative bg-white shadow-2xl animate-lightbox-in"
         style={{ width: 'min(88vw, 380px)', padding: '16px 16px 56px' }}
         onClick={(e) => e.stopPropagation()}
       >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute -top-4 -right-4 flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#111111] bg-white text-[#111111] hover:bg-[#111111] hover:text-white transition-all duration-200 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+        >
+          <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+            <path d="M2,2 L16,16 M16,2 L2,16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
         <img src={photo.src} alt="" className="block w-full object-cover" style={{ height: 'min(70vw, 340px)' }} />
         <p className="font-heading text-2xl text-[#111111] text-center mt-4">{photo.title}</p>
         <p className="text-xs text-[#555555] font-mono text-center mt-1">{photo.meta}</p>
