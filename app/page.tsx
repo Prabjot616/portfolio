@@ -613,6 +613,18 @@ const education = [
   },
 ];
 
+// "Mon YYYY" -> a sortable integer (months since year 0), used to lay
+// certifications out in true calendar order now that they render as a
+// timeline rather than an arbitrarily-ordered list.
+const MONTH_INDEX: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+const certDateValue = (date: string) => {
+  const [mon, year] = date.split(' ');
+  return Number(year) * 12 + (MONTH_INDEX[mon] ?? 0);
+};
+
 const certifications = [
   { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true },
   { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true },
@@ -634,7 +646,7 @@ const certifications = [
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
   { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
-];
+].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
   { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26' },
