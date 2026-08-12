@@ -879,7 +879,7 @@ export default function Portfolio() {
                 {certifications.map((cert, idx) => (
                   <div key={idx} className="group relative pb-6 border-b-2 border-[#dddddd] last:border-0">
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-[#111111] font-heading text-base max-w-[85%] flex items-center gap-1.5">
+                      <h3 className="text-[#111111] font-heading text-lg max-w-[85%] flex items-center gap-1.5">
                         {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
                         {cert.name}
                       </h3>
