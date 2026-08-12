@@ -274,9 +274,18 @@ const SkillsMarquee = () => {
     if (!track) return;
     const half = getHalf();
     durationRef.current = half / MARQUEE_SPEED;
+    // iOS Safari can leave a CSS animation "pending" and never actually play
+    // it if its properties (custom property, duration) are patched in the
+    // same tick the element — and its animate-* class — are first created,
+    // which is exactly what happens here since the whole page is gated
+    // behind `mounted` and this is the track's first paint. Tearing the
+    // animation down, forcing a style flush, then declaring it fresh (same
+    // trick as AnimatedSignature.replay()) reliably kicks it off instead of
+    // patching an instance Safari never started.
+    track.style.animation = 'none';
     track.style.setProperty('--marquee-distance', `-${half}px`);
-    track.style.animationDuration = `${durationRef.current}s`;
-    track.style.animationPlayState = 'running';
+    void track.offsetWidth;
+    track.style.animation = `skills-marquee ${durationRef.current}s linear infinite`;
     return () => {
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
@@ -380,7 +389,7 @@ const SkillsMarquee = () => {
     <div
       ref={trackRef}
       className="flex overflow-hidden whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none animate-skills-marquee"
-      style={{ touchAction: 'pan-y' }}
+      style={{ touchAction: 'pan-y', willChange: 'transform' }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseDown={onMouseDown}
