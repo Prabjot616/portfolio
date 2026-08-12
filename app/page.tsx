@@ -41,7 +41,7 @@ const AnimatedSignature = () => {
         <style>
           {`
             .signature-text {
-              font-family: 'Caveat', cursive;
+              font-family: var(--font-caveat), cursive;
               font-size: 100px;
               fill: transparent;
               stroke: #111111;
@@ -294,7 +294,7 @@ const SkillsMarquee = () => {
     <div
       ref={trackRef}
       className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none"
-      style={{ touchAction: 'pan-x' }}
+      style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
       onMouseEnter={settleAfterInteraction}
       onMouseLeave={endDrag}
       onMouseDown={onMouseDown}

@@ -1,21 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500&family=Fira+Code:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
 @import "tailwindcss";
-
-@font-face {
-  font-family: 'Architects Daughter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/ArchitectsDaughter-Regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Caveat';
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/Caveat-Variable.woff2') format('woff2');
-}
 
 @theme inline {
   --animate-fade-in: fadeIn 0.6s ease-out forwards;
@@ -23,11 +7,14 @@
   --animate-scale-in: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   --animate-draw-in: drawIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 
-  /* Font Families */
-  --font-heading: 'Caveat', cursive;
-  --font-body: 'Architects Daughter', cursive;
+  /* Font Families — Caveat and Architects Daughter are loaded via
+     next/font/local in layout.tsx, which supplies --font-caveat and
+     --font-architects (see the @font-face there for the generated,
+     preloaded font-family and its metric-matched fallback). */
+  --font-heading: var(--font-caveat), cursive;
+  --font-body: var(--font-architects), cursive;
   --font-mono: 'Fira Code', 'Monaco', 'Courier New', monospace;
-  --font-handwriting: 'Architects Daughter', cursive;
+  --font-handwriting: var(--font-architects), cursive;
 
   @keyframes fadeIn {
     from {

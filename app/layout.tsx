@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-sans",
-  subsets: ["latin"],
+// Self-hosted, so next/font/local (rather than raw @font-face in CSS) buys
+// us automatic preloading and a metric-matched fallback font — without
+// preloading, the browser doesn't discover the font URL until it parses
+// globals.css and hits text using it, which was long enough to show the
+// fallback font first on every load.
+const caveat = localFont({
+  src: "../public/fonts/Caveat-Variable.woff2",
+  variable: "--font-caveat",
+  display: "swap",
+});
+
+const architectsDaughter = localFont({
+  src: "../public/fonts/ArchitectsDaughter-Regular.woff2",
+  variable: "--font-architects",
+  weight: "400",
   display: "swap",
 });
 
@@ -28,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${spaceGrotesk.className} h-full antialiased`}
+      className={`${caveat.variable} ${architectsDaughter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
