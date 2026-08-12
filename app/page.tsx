@@ -200,109 +200,194 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
 // wheel/trackpad, or touch all take over immediately. Two duplicated copies of
 // the list let scrollLeft wrap seamlessly in either direction, so it never
 // snaps or resets — auto-scroll just picks back up wherever the user left it.
+const MARQUEE_SPEED = 36; // px/second
+
+// Ambient motion runs on a CSS animation (compositor thread) rather than a
+// JS/requestAnimationFrame loop — rAF-driven scrollLeft mutation turned out
+// unreliable on mobile Safari specifically (auto-scroll just never started
+// for some users, and -webkit-overflow-scrolling: touch didn't fix it
+// either). A CSS animation isn't subject to whatever main-thread throttling
+// was causing that. Drag/wheel/touch interactions pause the animation and
+// take over `transform: translateX()` directly, then hand back control by
+// resuming the animation from a negative animation-delay computed to match
+// wherever the interaction left off — no visible jump either way.
 const SkillsMarquee = () => {
   const trackRef = useRef<HTMLDivElement>(null);
+  const durationRef = useRef(0);
+  const frozenOffsetRef = useRef(0);
   const draggingRef = useRef(false);
   const dragStartXRef = useRef(0);
-  const dragStartScrollRef = useRef(0);
-  const pausedUntilRef = useRef(0);
-  const touchStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const touchStartRef = useRef({ x: 0, y: 0 });
+  const touchIntentRef = useRef<'none' | 'horizontal' | 'vertical'>('none');
+  const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const items = [...allSkills, ...allSkills];
+
+  const getHalf = () => (trackRef.current ? trackRef.current.scrollWidth / 2 : 0);
+  const normalize = (offset: number, half: number) => (half > 0 ? ((offset % half) + half) % half : 0);
+
+  // Reads the animation's current visual position (works whether running or
+  // already paused) so pausing never causes a jump.
+  const readOffset = () => {
+    const track = trackRef.current;
+    if (!track) return 0;
+    const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+    return -m.m41;
+  };
+
+  const freeze = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const offset = normalize(readOffset(), getHalf());
+    frozenOffsetRef.current = offset;
+    // A CSS animation's own value overrides an inline `transform` for as
+    // long as the animation is in effect — including while paused. Setting
+    // animation-play-state: paused alone leaves the animation "in effect",
+    // so it keeps winning the cascade and any inline transform write here
+    // is silently ignored. Removing the animation entirely (not just
+    // pausing it) is what actually cedes the property to inline styles.
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${-offset}px)`;
+  };
+
+  const resume = () => {
+    const track = trackRef.current;
+    if (!track || durationRef.current <= 0) return;
+    const half = getHalf();
+    const offset = normalize(frozenOffsetRef.current, half);
+    const progress = half > 0 ? offset / half : 0;
+    track.style.transform = '';
+    track.style.animation = `skills-marquee ${durationRef.current}s linear infinite`;
+    track.style.animationDelay = `${-(progress * durationRef.current)}s`;
+  };
+
+  const scheduleResume = (delay: number) => {
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => {
+      if (!draggingRef.current) resume();
+    }, delay);
+  };
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const speed = 36; // px/second
-    let last = performance.now();
-    let raf = requestAnimationFrame(tick);
-
-    function tick(now: number) {
-      const dt = Math.min((now - last) / 1000, 0.1);
-      last = now;
-      const shouldRun = !draggingRef.current && now > pausedUntilRef.current;
-      if (shouldRun) {
-        const half = track!.scrollWidth / 2;
-        track!.scrollLeft += speed * dt;
-        if (half > 0 && track!.scrollLeft >= half) track!.scrollLeft -= half;
-      }
-      raf = requestAnimationFrame(tick);
-    }
-    return () => cancelAnimationFrame(raf);
+    const half = getHalf();
+    durationRef.current = half / MARQUEE_SPEED;
+    track.style.setProperty('--marquee-distance', `-${half}px`);
+    track.style.animationDuration = `${durationRef.current}s`;
+    track.style.animationPlayState = 'running';
+    return () => {
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
   }, []);
 
-  const settleAfterInteraction = () => {
-    pausedUntilRef.current = performance.now() + 1800;
-  };
+  // Native listeners with { passive: false } — React attaches touchmove/wheel
+  // as passive by default, which would silently make preventDefault() a
+  // no-op and let the page try to scroll horizontally along with the strip.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
+    const dragTo = (clientX: number) => {
+      const offset = normalize(dragStartOffsetRef.current - (clientX - dragStartXRef.current), getHalf());
+      frozenOffsetRef.current = offset;
+      track.style.transform = `translateX(${-offset}px)`;
+    };
+
+    const onTouchMoveNative = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (touchIntentRef.current === 'none') {
+        const dx = t.clientX - touchStartRef.current.x;
+        const dy = t.clientY - touchStartRef.current.y;
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        touchIntentRef.current = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        if (touchIntentRef.current === 'horizontal') {
+          freeze();
+          draggingRef.current = true;
+          dragStartXRef.current = t.clientX;
+          dragStartOffsetRef.current = frozenOffsetRef.current;
+        }
+      }
+      if (touchIntentRef.current === 'horizontal') {
+        e.preventDefault();
+        dragTo(t.clientX);
+      }
+      // 'vertical': do nothing, let the page scroll natively (touch-action: pan-y).
+    };
+
+    const onWheelNative = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // vertical wheel scrolls the page, not this
+      e.preventDefault();
+      if (!draggingRef.current) freeze();
+      const offset = normalize(frozenOffsetRef.current + e.deltaX, getHalf());
+      frozenOffsetRef.current = offset;
+      track.style.transform = `translateX(${-offset}px)`;
+      scheduleResume(1800);
+    };
+
+    track.addEventListener('touchmove', onTouchMoveNative, { passive: false });
+    track.addEventListener('wheel', onWheelNative, { passive: false });
+    return () => {
+      track.removeEventListener('touchmove', onTouchMoveNative);
+      track.removeEventListener('wheel', onWheelNative);
+    };
+  }, []);
+
+  const onMouseEnter = () => {
+    freeze();
+    scheduleResume(1800); // fallback in case mouseleave never fires (cursor left stationary over the strip)
+  };
   const onMouseDown = (e: React.MouseEvent) => {
+    freeze();
     draggingRef.current = true;
     dragStartXRef.current = e.clientX;
-    dragStartScrollRef.current = trackRef.current?.scrollLeft ?? 0;
+    dragStartOffsetRef.current = frozenOffsetRef.current;
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
   };
   const onMouseMove = (e: React.MouseEvent) => {
     const track = trackRef.current;
     if (!track) return;
     if (!draggingRef.current) {
-      // Just hovering (not dragging): treat it like any other interaction —
-      // pause briefly and let auto-scroll resume on its own. A plain
-      // mouseenter alone gets a timed pause too (see onMouseEnter below);
-      // this only refreshes it while the cursor keeps moving.
-      settleAfterInteraction();
+      scheduleResume(1800);
       return;
     }
-    const half = track.scrollWidth / 2;
-    let desired = dragStartScrollRef.current - (e.clientX - dragStartXRef.current);
-    // Rebase rather than let a negative assignment get clamped to 0 by the
-    // DOM (which would silently lose how far past the edge the drag went,
-    // and get the strip stuck against that edge). 0 and `half` show
-    // pixel-identical content since the list is duplicated, so shifting the
-    // whole reference frame by `half` here is invisible to the user.
-    if (half > 0) {
-      while (desired < 0) { desired += half; dragStartScrollRef.current += half; }
-      while (desired >= half) { desired -= half; dragStartScrollRef.current -= half; }
-    }
-    track.scrollLeft = desired;
+    const offset = normalize(dragStartOffsetRef.current - (e.clientX - dragStartXRef.current), getHalf());
+    frozenOffsetRef.current = offset;
+    track.style.transform = `translateX(${-offset}px)`;
   };
   const endDrag = () => {
-    if (draggingRef.current) settleAfterInteraction();
-    draggingRef.current = false;
+    if (draggingRef.current) {
+      draggingRef.current = false;
+      scheduleResume(1800);
+    }
   };
-  // Backstop for native touch/trackpad scrolling: relocates away from the
-  // hard-clamped edges so momentum scrolling never dead-ends against them.
-  const onScroll = () => {
-    const track = trackRef.current;
-    if (!track || draggingRef.current) return;
-    const half = track.scrollWidth / 2;
-    if (half <= 0) return;
-    if (track.scrollLeft >= half) track.scrollLeft -= half;
-    else if (track.scrollLeft <= 0) track.scrollLeft = half - 1;
+  const onMouseLeave = () => {
+    if (draggingRef.current) { endDrag(); return; }
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resume();
   };
   const onTouchStart = (e: React.TouchEvent) => {
-    touchStartXRef.current = e.touches[0].clientX;
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    touchIntentRef.current = 'none';
   };
-  const onTouchMove = (e: React.TouchEvent) => {
-    // A touch landing on this element doesn't necessarily mean the user
-    // wants to drag it — on a full-width strip, a plain vertical page-scroll
-    // swipe routinely starts here too, and pausing on touchstart alone froze
-    // the strip for the whole time someone scrolled past it. Only pause once
-    // the touch shows real horizontal movement.
-    if (Math.abs(e.touches[0].clientX - touchStartXRef.current) > 6) settleAfterInteraction();
+  const onTouchEnd = () => {
+    if (touchIntentRef.current === 'horizontal') endDrag();
+    touchIntentRef.current = 'none';
   };
 
   return (
     <div
       ref={trackRef}
-      className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none"
-      style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
-      onMouseEnter={settleAfterInteraction}
-      onMouseLeave={endDrag}
+      className="flex overflow-hidden whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none animate-skills-marquee"
+      style={{ touchAction: 'pan-y' }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={endDrag}
-      onScroll={onScroll}
       onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
     >
       {items.map((skill, index) => {
         const pill = (
