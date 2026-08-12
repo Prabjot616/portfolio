@@ -16,8 +16,27 @@ const GitHubIcon = ({ className }: { className?: string }) => (
 );
 
 const AnimatedSignature = () => {
+  const firstRef = useRef<SVGTextElement>(null);
+  const lastRef = useRef<SVGTextElement>(null);
+
+  const replay = () => {
+    [firstRef.current, lastRef.current].forEach((el) => {
+      if (!el) return;
+      el.style.animation = 'none';
+      void el.getBoundingClientRect();
+      el.style.animation = '';
+    });
+  };
+
   return (
-    <div className="inline-block w-full max-w-4xl">
+    <div
+      className="inline-block w-full max-w-4xl cursor-pointer transition-transform duration-300 hover:scale-[1.015] active:scale-[0.99]"
+      onClick={replay}
+      role="button"
+      tabIndex={0}
+      aria-label="Replay signature animation"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); replay(); } }}
+    >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" className="w-full h-auto" preserveAspectRatio="xMinYMin meet">
         <style>
           {`
@@ -56,8 +75,8 @@ const AnimatedSignature = () => {
             }
           `}
         </style>
-        <text x="10" y="100" className="signature-text first-name">Prabjot</text>
-        <text x="10" y="220" className="signature-text last-name">Kaur</text>
+        <text ref={firstRef} x="10" y="100" className="signature-text first-name">Prabjot</text>
+        <text ref={lastRef} x="10" y="220" className="signature-text last-name">Kaur</text>
       </svg>
     </div>
   );
@@ -311,6 +330,59 @@ const HeroPointer = () => (
   </div>
 );
 
+// Hand-drawn reading-progress line down the left margin, in place of relying
+// solely on the browser scrollbar. A faint "track" copy of the wobble is
+// always fully drawn; an accent copy on top reveals via stroke-dasharray as
+// scrollY advances, with a dot riding the tip of the drawn portion. The dot
+// is a plain HTML element mapped proportionally from the path's own
+// viewBox space — an SVG circle at those raw coordinates would render as a
+// squashed ellipse, since the rail stretches the viewBox non-uniformly to
+// fill the viewport height.
+const wobblePath = "M12,0 C8,6 16,12 12,18 C9,24 15,30 12,36 C8,42 16,48 12,55 C9,61 15,67 12,73 C8,79 16,85 12,91 C10,95 13,98 12,100";
+
+const ScrollProgressRail = () => {
+  const fillRef = useRef<SVGPathElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const path = fillRef.current;
+    const dot = dotRef.current;
+    if (!path || !dot) return;
+    const svg = path.ownerSVGElement;
+    const total = path.getTotalLength();
+    path.style.strokeDasharray = `${total}`;
+
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const frac = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+      path.style.strokeDashoffset = `${total * (1 - frac)}`;
+      const pt = path.getPointAtLength(total * frac);
+      const rect = svg!.getBoundingClientRect();
+      dot.style.left = `${rect.left + (pt.x / 24) * rect.width}px`;
+      dot.style.top = `${rect.top + (pt.y / 100) * rect.height}px`;
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  return (
+    <div className="hidden sm:block fixed left-3 top-0 h-screen w-8 pointer-events-none z-[60]" aria-hidden="true">
+      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+        <path d={wobblePath} fill="none" stroke="#22222226" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
+        <path ref={fillRef} d={wobblePath} fill="none" stroke="#D6431F" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div ref={dotRef} className="fixed w-[9px] h-[9px] rounded-full bg-white border-[1.6px] border-[#D6431F]" style={{ transform: 'translate(-50%, -50%)' }} />
+    </div>
+  );
+};
+
 const personalInfo = {
   name: 'PRABJOT KAUR',
   title: 'Lead Software Engineer',
@@ -530,6 +602,7 @@ export default function Portfolio() {
 
   return (
     <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
+      <ScrollProgressRail />
 
       {/* Hero Section */}
       <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-20 md:py-32 lg:py-40">
