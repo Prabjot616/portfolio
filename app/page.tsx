@@ -122,14 +122,14 @@ const TimelinePin = () => (
   </svg>
 );
 
-const ACCENT = '#D6431F';
+const ACCENT = '#1D4ED8';
 
 // Marker-style scribble underline. Uses a tiled SVG background (not an overlay)
 // so it keeps working correctly if the wrapped phrase wraps across lines.
 // The tile is wide with irregular hump widths/heights so the repeat isn't
 // obviously mechanical, and the slopes are gentle (a real hand doesn't zigzag).
 const scribbleTile =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%23D6431F' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%231D4ED8' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span
@@ -167,7 +167,7 @@ const CircleLoop = ({ children, label, raised = false }: { children: React.React
   <span className="relative inline-flex">
     {label && (
       <span
-        className={`pointer-events-none absolute left-1 whitespace-nowrap font-heading text-lg leading-none text-[#D6431F] ${raised ? '-top-9' : '-top-6'}`}
+        className={`pointer-events-none absolute left-1 whitespace-nowrap font-heading text-lg leading-none text-[#1D4ED8] ${raised ? '-top-9' : '-top-6'}`}
       >
         {label} ↴
       </span>
@@ -175,7 +175,7 @@ const CircleLoop = ({ children, label, raised = false }: { children: React.React
     {children}
     <svg
       viewBox="0 0 140 70" preserveAspectRatio="none" aria-hidden="true"
-      className="pointer-events-none absolute text-[#D6431F]"
+      className="pointer-events-none absolute text-[#1D4ED8]"
       style={{ left: '-8px', right: '-8px', top: '-6px', bottom: '-6px', width: 'calc(100% + 16px)', height: 'calc(100% + 12px)' }}
     >
       <path
@@ -191,7 +191,7 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
   <svg width={size} height={size} viewBox="0 0 46 46" aria-hidden="true" className={className}>
     <path
       d="M23,4 C24.5,12 22,15 30,16.5 C23,19 25,23 23,31 C21.5,23 19,20 12,17.5 C19,15.5 17,12 23,4 Z"
-      fill="#F6DCCE" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
+      fill="#DCE9F8" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
     />
   </svg>
 );
@@ -277,8 +277,6 @@ const SkillsMarquee = () => {
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const half = getHalf();
-    durationRef.current = half / MARQUEE_SPEED;
 
     // The travel distance is only known after measuring the track, so it
     // can't be authored as a literal in globals.css. Feeding it in via a CSS
@@ -290,12 +288,35 @@ const SkillsMarquee = () => {
     // rule with the pixel value already baked in as a literal sidesteps
     // that indirection entirely.
     const styleEl = document.createElement('style');
-    styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
     document.head.appendChild(styleEl);
     styleElRef.current = styleEl;
 
-    track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
+    // Re-measuring after mount matters, not just on mount: Fira Code loads
+    // via an unoptimized `@import url(...)` (no next/font preloading), so
+    // it can swap in and reflow the skill pills to a different width after
+    // this first pass. If the keyframe's baked travel distance is stale by
+    // then, the two duplicated copies stop lining up at the loop seam and
+    // the strip goes visibly blank there once a lap completes. Re-applying
+    // on fonts.ready (and on resize, for viewport-driven reflow) keeps the
+    // seam exact; skip while the user is actively interacting so this
+    // doesn't fight a freeze/drag in progress.
+    const apply = () => {
+      if (track.style.animation === 'none') return;
+      const prevOffset = normalize(readOffset(), getHalf());
+      const half = getHalf();
+      durationRef.current = half / MARQUEE_SPEED;
+      styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
+      const progress = half > 0 ? normalize(prevOffset, half) / half : 0;
+      track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
+      track.style.animationDelay = `${-(progress * durationRef.current)}s`;
+    };
+
+    apply();
+    document.fonts?.ready?.then(apply);
+    window.addEventListener('resize', apply);
+
     return () => {
+      window.removeEventListener('resize', apply);
       styleEl.remove();
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
@@ -437,7 +458,7 @@ const CheckMark = () => (
 
 // "Say hi" note-to-self arrow, pointing at the hero CTA.
 const HeroPointer = () => (
-  <div className="hidden md:block absolute -top-11 left-0 text-[#D6431F]" aria-hidden="true">
+  <div className="hidden md:block absolute -top-11 left-0 text-[#1D4ED8]" aria-hidden="true">
     <span className="font-heading text-xl">say hi</span>
     <svg width="90" height="54" viewBox="0 0 90 54" className="absolute left-0 top-4">
       <defs>
@@ -452,70 +473,6 @@ const HeroPointer = () => (
     </svg>
   </div>
 );
-
-// Hand-drawn reading-progress line down the left margin, in place of relying
-// solely on the browser scrollbar. A faint "track" copy of the wobble is
-// always fully drawn; an accent copy on top reveals via stroke-dasharray as
-// scrollY advances, with a small hand-drawn mouse riding the tip of the
-// drawn portion. The marker is positioned via plain left/top styles mapped
-// proportionally from the path's own viewBox space — placing it with an SVG
-// motion path (offset-path) instead would misalign it, since the rail
-// stretches the viewBox non-uniformly (preserveAspectRatio="none") to fill
-// the viewport height and offset-path coordinates don't go through that
-// same stretch.
-const wobblePath = "M12,0 C8,6 16,12 12,18 C9,24 15,30 12,36 C8,42 16,48 12,55 C9,61 15,67 12,73 C8,79 16,85 12,91 C10,95 13,98 12,100";
-
-const ScrollProgressRail = () => {
-  const fillRef = useRef<SVGPathElement>(null);
-  const dotRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    const path = fillRef.current;
-    const dot = dotRef.current;
-    if (!path || !dot) return;
-    const svg = path.ownerSVGElement;
-    const total = path.getTotalLength();
-    path.style.strokeDasharray = `${total}`;
-
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const frac = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
-      path.style.strokeDashoffset = `${total * (1 - frac)}`;
-      const pt = path.getPointAtLength(total * frac);
-      const rect = svg!.getBoundingClientRect();
-      dot.style.left = `${rect.left + (pt.x / 24) * rect.width}px`;
-      dot.style.top = `${rect.top + (pt.y / 100) * rect.height}px`;
-    };
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
-  return (
-    <div className="hidden sm:block fixed left-3 top-0 h-screen w-8 pointer-events-none z-[60]" aria-hidden="true">
-      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-        <path d={wobblePath} fill="none" stroke="#22222226" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
-        <path ref={fillRef} d={wobblePath} fill="none" stroke="#D6431F" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-      <svg
-        ref={dotRef}
-        viewBox="-4 -1 24 22"
-        className="fixed w-[42px] h-[52px]"
-        style={{ transform: 'translate(-50%, -50%)' }}
-      >
-        <path d="M8,1.3 C11.2,1.1 13.3,3.9 13.1,8.2 C12.9,12.6 12.1,17.3 8,17.6 C3.9,17.3 3.1,12.6 2.9,8.2 C2.7,3.9 4.8,1.1 8,1.3 Z" fill="#ffffff" stroke="#111111" strokeWidth="1.4" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-        <path d="M8,1.6 C8,3.4 8,5.6 8,7.4" fill="none" stroke="#111111" strokeWidth="1" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-        <path d="M8,3 L8,5.6" fill="none" stroke={ACCENT} strokeWidth="1.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-    </div>
-  );
-};
 
 const personalInfo = {
   name: 'PRABJOT KAUR',
@@ -736,8 +693,6 @@ export default function Portfolio() {
 
   return (
     <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
-      <ScrollProgressRail />
-
       {/* Hero Section */}
       <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-20 md:py-32 lg:py-40">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
