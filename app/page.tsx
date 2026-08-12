@@ -649,13 +649,13 @@ const certifications = [
 ].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
-  { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26' },
+  { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26', photo: '/images/achievements/mentor-of-the-year.jpg', photoRotate: '6deg' },
   { title: 'Top 100 Finalist, Google APAC Hackathon', meta: 'AI/SEO Analysis Pipeline' },
   { title: 'AWS AI Practitioner Certified', meta: '2024' },
-  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23', photo: '/images/achievements/employee-2022-23.jpg', photoRotate: '-7deg' },
   { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21' },
-  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21' },
-  { title: 'Academic Excellence Award', meta: 'BCA · 2017–18' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', photoRotate: '5deg' },
+  { title: 'Academic Excellence Award', meta: 'BCA · 2017–18', photo: '/images/achievements/academic-excellence.jpg', photoRotate: '-6deg' },
   { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
 ];
 
@@ -877,12 +877,24 @@ export default function Portfolio() {
             </h2>
             <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
-                <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
+                <li key={idx} className="scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
                   <CheckMark />
                   <div>
                     <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
                     <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
                   </div>
+                  {achieve.photo && (
+                    <div
+                      className="absolute -top-4 -right-3 bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)]"
+                      style={{ width: '84px', padding: '6px 6px 20px', transform: `rotate(${achieve.photoRotate})` }}
+                    >
+                      <span
+                        className="absolute left-1/2 bg-[#EAE3D3]"
+                        style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
+                      />
+                      <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: '70px' }} />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
