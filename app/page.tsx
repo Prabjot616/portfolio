@@ -488,12 +488,12 @@ const experience = [
     location: 'Kolkata, West Bengal, India',
     period: 'Oct 2024 – Present',
     points: [
-      'Lead architecture decisions for Shopify app development, full-stack web, mobile (React Native), and AI/agent-based systems',
-      'Review Shopify platform updates as they roll out and coordinate technical execution across the engineering team',
-      'Handle infrastructure work including server hardening, deployment pipelines, and production troubleshooting',
-      'Build tools and systems that improve delivery consistency and velocity for client projects',
+      { text: 'Lead architecture decisions for Shopify app development, full-stack web, mobile (React Native), and AI/agent-based systems', highlight: 'Shopify app development' },
+      { text: 'Review Shopify platform updates as they roll out and coordinate technical execution across the engineering team', highlight: 'coordinate technical execution' },
+      { text: 'Handle infrastructure work including server hardening, deployment pipelines, and production troubleshooting', highlight: 'server hardening' },
+      { text: 'Build tools and systems that improve delivery consistency and velocity for client projects', highlight: 'delivery consistency and velocity' },
     ],
-    skills: 'Product Engineering · Team Leadership · API Design · Shopify Apps · AI Agent Systems'
+    skills: ['Product Engineering', 'Team Leadership', 'API Design', 'Shopify Apps', 'AI Agent Systems']
   },
   {
     title: 'Senior Software Engineer',
@@ -501,11 +501,11 @@ const experience = [
     location: 'India',
     period: 'Oct 2021 – Sep 2024',
     points: [
-      'Built and maintained backend APIs and database systems supporting scalable commerce platforms',
-      'Developed Shopify applications and integrations for e-commerce clients',
-      'Optimized application architecture and database queries to improve system performance and reliability',
+      { text: 'Built and maintained backend APIs and database systems supporting scalable commerce platforms', highlight: 'scalable commerce platforms' },
+      { text: 'Developed Shopify applications and integrations for e-commerce clients', highlight: 'Shopify applications and integrations' },
+      { text: 'Optimized application architecture and database queries to improve system performance and reliability', highlight: 'system performance and reliability' },
     ],
-    skills: 'Full-Stack Development · Shopify APIs · Database Architecture'
+    skills: ['Full-Stack Development', 'Shopify APIs', 'Database Architecture']
   },
   {
     title: 'Software Engineer',
@@ -513,11 +513,11 @@ const experience = [
     location: 'India',
     period: 'Aug 2020 – Sep 2021',
     points: [
-      'Built backend modules and application features using modern web frameworks',
-      'Designed and implemented database schemas and API integrations for client projects',
-      'Collaborated with team on e-commerce platform development',
+      { text: 'Built backend modules and application features using modern web frameworks', highlight: 'modern web frameworks' },
+      { text: 'Designed and implemented database schemas and API integrations for client projects', highlight: 'database schemas and API integrations' },
+      { text: 'Collaborated with team on e-commerce platform development', highlight: 'e-commerce platform development' },
     ],
-    skills: 'Backend Development · API Integration · Database Design'
+    skills: ['Backend Development', 'API Integration', 'Database Design']
   },
   {
     title: 'Engineering Intern',
@@ -525,11 +525,11 @@ const experience = [
     location: 'Kolkata Area, India',
     period: 'Jun 2019 – Jul 2020',
     points: [
-      'Assisted in developing and maintaining web application modules',
-      'Gained hands-on experience in backend architectures and software engineering practices',
-      'Contributed to client projects under senior engineer mentorship',
+      { text: 'Assisted in developing and maintaining web application modules', highlight: 'web application modules' },
+      { text: 'Gained hands-on experience in backend architectures and software engineering practices', highlight: 'backend architectures' },
+      { text: 'Contributed to client projects under senior engineer mentorship', highlight: 'senior engineer mentorship' },
     ],
-    skills: 'Software Development · Backend Systems'
+    skills: ['Software Development', 'Backend Systems']
   },
 ];
 
@@ -637,14 +637,14 @@ const certifications = [
 ];
 
 const achievements = [
-  'Mentor of the Year 2025-26 – Tech Wishes Solutions',
-  'Top 100 Finalist – Google APAC Hackathon (AI/SEO Analysis Pipeline)',
-  'AWS AI Practitioner Certified – 2024',
-  'Employee of the Year 2022-23 – Tech Wishes Solutions',
-  'Star Performer 2020-21 – Tech Wishes Solutions',
-  'Employee of the Year 2020-21 – Tech Wishes Solutions',
-  'Academic Excellence Award - BCA 2017-18',
-  'Progressed from Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer at Tech Wishes Solutions (2019-Present)'
+  { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26' },
+  { title: 'Top 100 Finalist, Google APAC Hackathon', meta: 'AI/SEO Analysis Pipeline' },
+  { title: 'AWS AI Practitioner Certified', meta: '2024' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23' },
+  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21' },
+  { title: 'Academic Excellence Award', meta: 'BCA · 2017–18' },
+  { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
 ];
 
 export default function Portfolio() {
@@ -816,15 +816,19 @@ export default function Portfolio() {
                   {job.points.map((point, i) => (
                     <li key={i} className="text-[#333333] flex items-start gap-3 leading-relaxed">
                       <span className="text-[#222222] mt-0.5 block w-4 flex-shrink-0">—</span>
-                      <span>{point}</span>
+                      <span>{withHighlight(point.text, point.highlight)}</span>
                     </li>
                   ))}
                 </ul>
 
-                {job.skills && (
-                  <div className="pt-6 border-t-2 border-[#dddddd] flex items-center gap-3">
-                    <span className="text-xs text-[#555555] uppercase tracking-wider font-mono">Skills</span>
-                    <p className="text-sm text-[#111111]">{job.skills}</p>
+                {job.skills.length > 0 && (
+                  <div className="pt-6 border-t-2 border-[#dddddd] flex flex-wrap items-center gap-2">
+                    <span className="text-xs text-[#555555] uppercase tracking-wider font-mono mr-1">Skills</span>
+                    {job.skills.map((skill) => (
+                      <span key={skill} className="flex items-center justify-center h-7 px-3 rounded-full border-2 border-[#222222] text-xs font-medium text-[#111111] font-mono whitespace-nowrap">
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 )}
               </div>
@@ -863,7 +867,10 @@ export default function Portfolio() {
               {achievements.map((achieve, idx) => (
                 <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
                   <CheckMark />
-                  <span className="text-[#111111] leading-relaxed">{achieve}</span>
+                  <div>
+                    <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
+                    <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -878,17 +885,25 @@ export default function Portfolio() {
               <div className="space-y-6">
                 {certifications.map((cert, idx) => (
                   <div key={idx} className="group relative pb-6 border-b-2 border-[#dddddd] last:border-0">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-[#111111] font-heading text-base max-w-[85%] flex items-center gap-1.5">
-                        {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
-                        {cert.name}
-                      </h3>
+                    <h3 className="text-[#111111] font-heading text-lg mb-2 flex items-center gap-1.5">
+                      {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
+                      {cert.name}
+                    </h3>
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="inline-flex items-center h-6 px-2.5 rounded-full border-2 border-[#1D4ED8] text-[#1D4ED8] text-[10px] font-medium uppercase tracking-wide font-mono">
+                        {cert.issuer}
+                      </span>
+                      <span className="text-xs text-[#555555] font-mono flex-shrink-0">{cert.date}</span>
                     </div>
-                    {cert.skills && <p className="text-xs text-[#555555] mb-2 font-mono">Skills: {cert.skills}</p>}
-                    <div className="flex justify-between items-center mt-3">
-                      <span className="text-sm text-[#333333]">{cert.issuer}</span>
-                      <span className="text-xs text-[#555555] font-mono">{cert.date}</span>
-                    </div>
+                    {cert.skills && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5">
+                        {cert.skills.split(' · ').map((skill) => (
+                          <span key={skill} className="text-[10px] text-[#333333] bg-[#1D4ED814] rounded px-1.5 py-1 font-mono">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
