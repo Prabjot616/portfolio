@@ -613,6 +613,18 @@ const education = [
   },
 ];
 
+// "Mon YYYY" -> a sortable integer (months since year 0), used to lay
+// certifications out in true calendar order now that they render as a
+// timeline rather than an arbitrarily-ordered list.
+const MONTH_INDEX: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+const certDateValue = (date: string) => {
+  const [mon, year] = date.split(' ');
+  return Number(year) * 12 + (MONTH_INDEX[mon] ?? 0);
+};
+
 const certifications = [
   { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true },
   { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true },
@@ -634,7 +646,7 @@ const certifications = [
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
   { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
-];
+].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
   { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26' },
@@ -882,28 +894,18 @@ export default function Portfolio() {
               Certifications
             </h2>
             <div className="scroll-reveal bg-white border-2 border-[#222222] p-8 flex-1 min-h-0 overflow-y-auto">
-              <div className="space-y-6">
+              <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
                 {certifications.map((cert, idx) => (
-                  <div key={idx} className="group relative pb-6 border-b-2 border-[#dddddd] last:border-0">
-                    <h3 className="text-[#111111] font-heading text-lg mb-2 flex items-center gap-1.5">
+                  <div key={idx} className="relative pl-8 group">
+                    <TimelinePin />
+                    <h3 className="text-[#111111] font-heading text-lg mb-1 flex items-center gap-1.5">
                       {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
                       {cert.name}
                     </h3>
-                    <div className="flex justify-between items-center gap-3">
-                      <span className="inline-flex items-center h-6 px-2.5 rounded-full border-2 border-[#1D4ED8] text-[#1D4ED8] text-[10px] font-medium uppercase tracking-wide font-mono">
-                        {cert.issuer}
-                      </span>
-                      <span className="text-xs text-[#555555] font-mono flex-shrink-0">{cert.date}</span>
-                    </div>
-                    {cert.skills && (
-                      <div className="flex flex-wrap gap-1.5 mt-2.5">
-                        {cert.skills.split(' · ').map((skill) => (
-                          <span key={skill} className="text-[10px] text-[#333333] bg-[#1D4ED814] rounded px-1.5 py-1 font-mono">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    <p className="text-xs text-[#555555]">
+                      <span className="font-mono">{cert.issuer} · {cert.date}</span>
+                      {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
+                    </p>
                   </div>
                 ))}
               </div>
