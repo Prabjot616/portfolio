@@ -456,16 +456,18 @@ const HeroPointer = () => (
 // Hand-drawn reading-progress line down the left margin, in place of relying
 // solely on the browser scrollbar. A faint "track" copy of the wobble is
 // always fully drawn; an accent copy on top reveals via stroke-dasharray as
-// scrollY advances, with a dot riding the tip of the drawn portion. The dot
-// is a plain HTML element mapped proportionally from the path's own
-// viewBox space — an SVG circle at those raw coordinates would render as a
-// squashed ellipse, since the rail stretches the viewBox non-uniformly to
-// fill the viewport height.
+// scrollY advances, with a small hand-drawn mouse riding the tip of the
+// drawn portion. The marker is positioned via plain left/top styles mapped
+// proportionally from the path's own viewBox space — placing it with an SVG
+// motion path (offset-path) instead would misalign it, since the rail
+// stretches the viewBox non-uniformly (preserveAspectRatio="none") to fill
+// the viewport height and offset-path coordinates don't go through that
+// same stretch.
 const wobblePath = "M12,0 C8,6 16,12 12,18 C9,24 15,30 12,36 C8,42 16,48 12,55 C9,61 15,67 12,73 C8,79 16,85 12,91 C10,95 13,98 12,100";
 
 const ScrollProgressRail = () => {
   const fillRef = useRef<SVGPathElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const path = fillRef.current;
@@ -501,7 +503,16 @@ const ScrollProgressRail = () => {
       <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
         <path ref={fillRef} d={wobblePath} fill="none" stroke="#D6431F" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       </svg>
-      <div ref={dotRef} className="fixed w-[9px] h-[9px] rounded-full bg-white border-[1.6px] border-[#D6431F]" style={{ transform: 'translate(-50%, -50%)' }} />
+      <svg
+        ref={dotRef}
+        viewBox="-4 -1 24 22"
+        className="fixed w-[42px] h-[52px]"
+        style={{ transform: 'translate(-50%, -50%)' }}
+      >
+        <path d="M8,1.3 C11.2,1.1 13.3,3.9 13.1,8.2 C12.9,12.6 12.1,17.3 8,17.6 C3.9,17.3 3.1,12.6 2.9,8.2 C2.7,3.9 4.8,1.1 8,1.3 Z" fill="#ffffff" stroke="#111111" strokeWidth="1.4" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+        <path d="M8,1.6 C8,3.4 8,5.6 8,7.4" fill="none" stroke="#111111" strokeWidth="1" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        <path d="M8,3 L8,5.6" fill="none" stroke={ACCENT} strokeWidth="1.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
     </div>
   );
 };
