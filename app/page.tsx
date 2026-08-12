@@ -16,8 +16,27 @@ const GitHubIcon = ({ className }: { className?: string }) => (
 );
 
 const AnimatedSignature = () => {
+  const firstRef = useRef<SVGTextElement>(null);
+  const lastRef = useRef<SVGTextElement>(null);
+
+  const replay = () => {
+    [firstRef.current, lastRef.current].forEach((el) => {
+      if (!el) return;
+      el.style.animation = 'none';
+      void el.getBoundingClientRect();
+      el.style.animation = '';
+    });
+  };
+
   return (
-    <div className="inline-block w-full max-w-4xl">
+    <div
+      className="inline-block w-full max-w-4xl cursor-pointer transition-transform duration-300 hover:scale-[1.015] active:scale-[0.99]"
+      onClick={replay}
+      role="button"
+      tabIndex={0}
+      aria-label="Replay signature animation"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); replay(); } }}
+    >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" className="w-full h-auto" preserveAspectRatio="xMinYMin meet">
         <style>
           {`
@@ -56,8 +75,8 @@ const AnimatedSignature = () => {
             }
           `}
         </style>
-        <text x="10" y="100" className="signature-text first-name">Prabjot</text>
-        <text x="10" y="220" className="signature-text last-name">Kaur</text>
+        <text ref={firstRef} x="10" y="100" className="signature-text first-name">Prabjot</text>
+        <text ref={lastRef} x="10" y="220" className="signature-text last-name">Kaur</text>
       </svg>
     </div>
   );
@@ -107,8 +126,10 @@ const ACCENT = '#D6431F';
 
 // Marker-style scribble underline. Uses a tiled SVG background (not an overlay)
 // so it keeps working correctly if the wrapped phrase wraps across lines.
+// The tile is wide with irregular hump widths/heights so the repeat isn't
+// obviously mechanical, and the slopes are gentle (a real hand doesn't zigzag).
 const scribbleTile =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 14' width='40' height='14'%3E%3Cpath d='M0,7 C6,1 14,1 20,7 C26,13 34,13 40,7' fill='none' stroke='%23D6431F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%23D6431F' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span
@@ -116,7 +137,7 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
       backgroundImage: `url("${scribbleTile}")`,
       backgroundRepeat: 'repeat-x',
       backgroundPosition: '0 100%',
-      backgroundSize: '34px 12px',
+      backgroundSize: '120px 14px',
       paddingBottom: '3px',
       boxDecorationBreak: 'clone',
       WebkitBoxDecorationBreak: 'clone',
@@ -174,6 +195,193 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
     />
   </svg>
 );
+
+// Skills strip: auto-scrolls at a steady pace, but hovering, dragging (mouse),
+// wheel/trackpad, or touch all take over immediately. Two duplicated copies of
+// the list let scrollLeft wrap seamlessly in either direction, so it never
+// snaps or resets — auto-scroll just picks back up wherever the user left it.
+const SkillsMarquee = () => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollRef = useRef(0);
+  const pausedUntilRef = useRef(0);
+
+  const items = [...allSkills, ...allSkills];
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const speed = 36; // px/second
+    let last = performance.now();
+    let raf = requestAnimationFrame(tick);
+
+    function tick(now: number) {
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      const shouldRun = !draggingRef.current && !hoveredRef.current && now > pausedUntilRef.current;
+      if (shouldRun) {
+        const half = track!.scrollWidth / 2;
+        track!.scrollLeft += speed * dt;
+        if (half > 0 && track!.scrollLeft >= half) track!.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const settleAfterInteraction = () => {
+    pausedUntilRef.current = performance.now() + 1800;
+  };
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    draggingRef.current = true;
+    dragStartXRef.current = e.clientX;
+    dragStartScrollRef.current = trackRef.current?.scrollLeft ?? 0;
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    const track = trackRef.current;
+    if (!draggingRef.current || !track) return;
+    const half = track.scrollWidth / 2;
+    let desired = dragStartScrollRef.current - (e.clientX - dragStartXRef.current);
+    // Rebase rather than let a negative assignment get clamped to 0 by the
+    // DOM (which would silently lose how far past the edge the drag went,
+    // and get the strip stuck against that edge). 0 and `half` show
+    // pixel-identical content since the list is duplicated, so shifting the
+    // whole reference frame by `half` here is invisible to the user.
+    if (half > 0) {
+      while (desired < 0) { desired += half; dragStartScrollRef.current += half; }
+      while (desired >= half) { desired -= half; dragStartScrollRef.current -= half; }
+    }
+    track.scrollLeft = desired;
+  };
+  const endDrag = () => {
+    if (draggingRef.current) settleAfterInteraction();
+    draggingRef.current = false;
+  };
+  // Backstop for native touch/trackpad scrolling: relocates away from the
+  // hard-clamped edges so momentum scrolling never dead-ends against them.
+  const onScroll = () => {
+    const track = trackRef.current;
+    if (!track || draggingRef.current) return;
+    const half = track.scrollWidth / 2;
+    if (half <= 0) return;
+    if (track.scrollLeft >= half) track.scrollLeft -= half;
+    else if (track.scrollLeft <= 0) track.scrollLeft = half - 1;
+  };
+
+  return (
+    <div
+      ref={trackRef}
+      className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: 'pan-x' }}
+      onMouseEnter={() => { hoveredRef.current = true; }}
+      onMouseLeave={() => { hoveredRef.current = false; endDrag(); }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={endDrag}
+      onScroll={onScroll}
+      onTouchStart={settleAfterInteraction}
+      onTouchEnd={settleAfterInteraction}
+    >
+      {items.map((skill, index) => {
+        const pill = (
+          <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge">
+            {skill}
+          </span>
+        );
+        const highlight = skillHighlights[skill];
+        return (
+          <span key={index} className="mx-3 flex-shrink-0">
+            {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
+          </span>
+        );
+      })}
+    </div>
+  );
+};
+
+// Hand-drawn checkmark, replaces the solid square achievement bullet.
+const CheckMark = () => (
+  <svg width="20" height="18" viewBox="0 0 20 16" aria-hidden="true" className="flex-shrink-0 mt-1 transition-transform duration-300 group-hover:scale-125">
+    <path
+      d="M2,8 C4,11 6,13 8,14 C11,9 14,4 18,2"
+      fill="none" stroke={ACCENT} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// "Say hi" note-to-self arrow, pointing at the hero CTA.
+const HeroPointer = () => (
+  <div className="hidden md:block absolute -top-11 left-0 text-[#D6431F]" aria-hidden="true">
+    <span className="font-heading text-xl">say hi</span>
+    <svg width="90" height="54" viewBox="0 0 90 54" className="absolute left-0 top-4">
+      <defs>
+        <marker id="hero-arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L7,4 L0,7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </marker>
+      </defs>
+      <path
+        d="M6,6 C28,3 62,12 78,34" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+        markerEnd="url(#hero-arrowhead)"
+      />
+    </svg>
+  </div>
+);
+
+// Hand-drawn reading-progress line down the left margin, in place of relying
+// solely on the browser scrollbar. A faint "track" copy of the wobble is
+// always fully drawn; an accent copy on top reveals via stroke-dasharray as
+// scrollY advances, with a dot riding the tip of the drawn portion. The dot
+// is a plain HTML element mapped proportionally from the path's own
+// viewBox space — an SVG circle at those raw coordinates would render as a
+// squashed ellipse, since the rail stretches the viewBox non-uniformly to
+// fill the viewport height.
+const wobblePath = "M12,0 C8,6 16,12 12,18 C9,24 15,30 12,36 C8,42 16,48 12,55 C9,61 15,67 12,73 C8,79 16,85 12,91 C10,95 13,98 12,100";
+
+const ScrollProgressRail = () => {
+  const fillRef = useRef<SVGPathElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const path = fillRef.current;
+    const dot = dotRef.current;
+    if (!path || !dot) return;
+    const svg = path.ownerSVGElement;
+    const total = path.getTotalLength();
+    path.style.strokeDasharray = `${total}`;
+
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const frac = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+      path.style.strokeDashoffset = `${total * (1 - frac)}`;
+      const pt = path.getPointAtLength(total * frac);
+      const rect = svg!.getBoundingClientRect();
+      dot.style.left = `${rect.left + (pt.x / 24) * rect.width}px`;
+      dot.style.top = `${rect.top + (pt.y / 100) * rect.height}px`;
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  return (
+    <div className="hidden sm:block fixed left-3 top-0 h-screen w-8 pointer-events-none z-[60]" aria-hidden="true">
+      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+        <path d={wobblePath} fill="none" stroke="#22222226" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
+        <path ref={fillRef} d={wobblePath} fill="none" stroke="#D6431F" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div ref={dotRef} className="fixed w-[9px] h-[9px] rounded-full bg-white border-[1.6px] border-[#D6431F]" style={{ transform: 'translate(-50%, -50%)' }} />
+    </div>
+  );
+};
 
 const personalInfo = {
   name: 'PRABJOT KAUR',
@@ -394,6 +602,7 @@ export default function Portfolio() {
 
   return (
     <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
+      <ScrollProgressRail />
 
       {/* Hero Section */}
       <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-20 md:py-32 lg:py-40">
@@ -410,11 +619,14 @@ export default function Portfolio() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 items-start animate-slide-up delay-200">
-              <a href={`mailto:${personalInfo.email}`}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white font-medium rounded-full hover-bg hover:bg-[#000000] border-2 border-[#111111] font-mono text-sm button-press transition-all duration-200">
-                <Mail className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
-                <span>Get in Touch</span>
-              </a>
+              <div className="relative">
+                <HeroPointer />
+                <a href={`mailto:${personalInfo.email}`}
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white font-medium rounded-full hover-bg hover:bg-[#000000] border-2 border-[#111111] font-mono text-sm button-press transition-all duration-200">
+                  <Mail className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
+                  <span>Get in Touch</span>
+                </a>
+              </div>
 
               <div className="flex gap-4">
                 <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#222222] text-[#222222] hover-border hover:border-[#111111] hover:text-[#111111] transition-all duration-300 icon-hover">
@@ -442,23 +654,7 @@ export default function Portfolio() {
 
       {/* Skills Marquee Section */}
       <section className="py-24 border-y-2 border-[#111111] bg-[#fcfcfc] overflow-hidden">
-        <div className="flex overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap min-w-full pt-12 hover:[animation-play-state:paused]">
-            {[...allSkills, ...allSkills, ...allSkills].map((skill, index) => {
-              const pill = (
-                <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge cursor-default">
-                  {skill}
-                </span>
-              );
-              const highlight = skillHighlights[skill];
-              return (
-                <span key={`1-${index}`} className="mx-3">
-                  {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
-                </span>
-              );
-            })}
-          </div>
-        </div>
+        <SkillsMarquee />
       </section>
 
       {/* Projects Section */}
@@ -560,9 +756,10 @@ export default function Portfolio() {
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight">
               Education
             </h2>
-            <div className="space-y-16">
+            <div className="space-y-16 border-l-2 border-dashed border-[#222222]">
               {education.map((edu, idx) => (
-                <div key={idx} className="scroll-reveal border-l-2 border-[#222222] pl-6">
+                <div key={idx} className="scroll-reveal relative pl-8 group">
+                  <TimelinePin />
                   <h3 className="text-xl font-heading text-[#111111] mb-2">{edu.degree}</h3>
                   <p className="text-[#333333] font-medium mb-1">{edu.school}</p>
                   <p className="text-sm text-[#555555] font-mono">{edu.location} • {edu.period}</p>
@@ -577,7 +774,7 @@ export default function Portfolio() {
             <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
                 <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
-                  <span className="text-[#111111] text-lg mt-0.5 transition-transform duration-300 group-hover:scale-125">■</span>
+                  <CheckMark />
                   <span className="text-[#111111] leading-relaxed">{achieve}</span>
                 </li>
               ))}
@@ -626,7 +823,7 @@ export default function Portfolio() {
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t-2 border-[#333333] pt-12">
             <div className="space-y-4">
-              <a href={`mailto:${personalInfo.email}`} className="block text-2xl md:text-3xl text-[#dddddd] hover:text-white transition-all duration-300 link-underline">
+              <a href={`mailto:${personalInfo.email}`} className="inline-block text-2xl md:text-3xl text-[#dddddd] hover:text-white transition-all duration-300 footer-wavy-underline">
                 {personalInfo.email}
               </a>
             </div>
