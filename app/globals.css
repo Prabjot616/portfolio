@@ -8,7 +8,9 @@
   --animate-draw-in: drawIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   /* Duration is a placeholder — SkillsMarquee overrides animation-duration
      inline once it measures the track width, so the loop speed stays
-     constant regardless of the skill list's total length. */
+     constant regardless of the skill list's total length. The travel
+     distance itself (-50%, below) needs no such override — see the
+     keyframe's comment. */
   --animate-skills-marquee: skills-marquee 60s linear infinite;
 
   /* Font Families — Caveat and Architects Daughter are loaded via
@@ -51,15 +53,18 @@
     }
   }
 
-  /* translateX() percentages resolve against the element's own layout width
-     (its flex-item box, ~viewport-width here) — NOT its scrollWidth, which
-     is what "one copy" actually measures once the duplicated list overflows.
-     -50% therefore travelled a small fraction of the intended distance.
-     SkillsMarquee sets --marquee-distance to the real measured pixel value;
-     -50% here is only a rough fallback for the instant before that runs. */
+  /* translateX() percentages resolve against the element's own layout
+     width. SkillsMarquee's track is `w-max` with the overflow-clipping
+     viewport on a separate wrapper, so the track's layout width always
+     equals its full two-copies content width — making -50% always mean
+     "exactly one copy", correct by construction regardless of webfont
+     load timing or any other reflow. (An earlier version had the track
+     double as its own clipping viewport, which constrained its layout
+     width to ~the visible strip instead of its content width, making
+     -50% travel only a small fraction of the intended distance.) */
   @keyframes skills-marquee {
     to {
-      transform: translateX(var(--marquee-distance, -50%));
+      transform: translateX(-50%);
     }
   }
 
