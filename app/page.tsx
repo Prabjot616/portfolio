@@ -277,8 +277,6 @@ const SkillsMarquee = () => {
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const half = getHalf();
-    durationRef.current = half / MARQUEE_SPEED;
 
     // The travel distance is only known after measuring the track, so it
     // can't be authored as a literal in globals.css. Feeding it in via a CSS
@@ -290,12 +288,35 @@ const SkillsMarquee = () => {
     // rule with the pixel value already baked in as a literal sidesteps
     // that indirection entirely.
     const styleEl = document.createElement('style');
-    styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
     document.head.appendChild(styleEl);
     styleElRef.current = styleEl;
 
-    track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
+    // Re-measuring after mount matters, not just on mount: Fira Code loads
+    // via an unoptimized `@import url(...)` (no next/font preloading), so
+    // it can swap in and reflow the skill pills to a different width after
+    // this first pass. If the keyframe's baked travel distance is stale by
+    // then, the two duplicated copies stop lining up at the loop seam and
+    // the strip goes visibly blank there once a lap completes. Re-applying
+    // on fonts.ready (and on resize, for viewport-driven reflow) keeps the
+    // seam exact; skip while the user is actively interacting so this
+    // doesn't fight a freeze/drag in progress.
+    const apply = () => {
+      if (track.style.animation === 'none') return;
+      const prevOffset = normalize(readOffset(), getHalf());
+      const half = getHalf();
+      durationRef.current = half / MARQUEE_SPEED;
+      styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
+      const progress = half > 0 ? normalize(prevOffset, half) / half : 0;
+      track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
+      track.style.animationDelay = `${-(progress * durationRef.current)}s`;
+    };
+
+    apply();
+    document.fonts?.ready?.then(apply);
+    window.addEventListener('resize', apply);
+
     return () => {
+      window.removeEventListener('resize', apply);
       styleEl.remove();
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
@@ -452,69 +473,6 @@ const HeroPointer = () => (
     </svg>
   </div>
 );
-
-// Hand-drawn reading-progress line down the left margin, in place of relying
-// solely on the browser scrollbar. A faint "track" copy of the wobble is
-// always fully drawn; an accent copy on top reveals via stroke-dasharray as
-// scrollY advances, with a small hand-drawn mouse riding the tip of the
-// drawn portion. The marker is positioned via plain left/top styles mapped
-// proportionally from the path's own viewBox space — placing it with an SVG
-// motion path (offset-path) instead would misalign it, since the rail
-// stretches the viewBox non-uniformly (preserveAspectRatio="none") to fill
-// the viewport height and offset-path coordinates don't go through that
-// same stretch.
-const wobblePath = "M12,0 C8,6 16,12 12,18 C9,24 15,30 12,36 C8,42 16,48 12,55 C9,61 15,67 12,73 C8,79 16,85 12,91 C10,95 13,98 12,100";
-
-const ScrollProgressRail = () => {
-  const fillRef = useRef<SVGPathElement>(null);
-  const dotRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    const path = fillRef.current;
-    const dot = dotRef.current;
-    if (!path || !dot) return;
-    const svg = path.ownerSVGElement;
-    const total = path.getTotalLength();
-    path.style.strokeDasharray = `${total}`;
-
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const frac = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
-      path.style.strokeDashoffset = `${total * (1 - frac)}`;
-      const pt = path.getPointAtLength(total * frac);
-      const rect = svg!.getBoundingClientRect();
-      dot.style.left = `${rect.left + (pt.x / 24) * rect.width}px`;
-      dot.style.top = `${rect.top + (pt.y / 100) * rect.height}px`;
-    };
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
-  return (
-    <div className="hidden sm:block fixed left-3 top-0 h-screen w-8 pointer-events-none z-[60]" aria-hidden="true">
-      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
-        <path d={wobblePath} fill="none" stroke="#22222226" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-      <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
-        <path ref={fillRef} d={wobblePath} fill="none" stroke="#1D4ED8" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-      <svg
-        ref={dotRef}
-        viewBox="-4 -1 24 22"
-        className="fixed w-[42px] h-[52px]"
-        style={{ transform: 'translate(-50%, -50%)' }}
-      >
-        <path d="M8,1.3 C11.2,1.1 13.3,3.9 13.1,8.2 C12.9,12.6 12.1,17.3 8,17.6 C3.9,17.3 3.1,12.6 2.9,8.2 C2.7,3.9 4.8,1.1 8,1.3 Z" fill="#ffffff" stroke="#111111" strokeWidth="1.4" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-        <path d="M8,1.6 C8,3.4 8,5.6 8,7.4" fill="none" stroke="#111111" strokeWidth="1" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-      </svg>
-    </div>
-  );
-};
 
 const personalInfo = {
   name: 'PRABJOT KAUR',
@@ -735,8 +693,6 @@ export default function Portfolio() {
 
   return (
     <main className="relative flex flex-col w-full min-h-screen bg-white overflow-x-clip font-body">
-      <ScrollProgressRail />
-
       {/* Hero Section */}
       <section className="relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 py-20 md:py-32 lg:py-40">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
