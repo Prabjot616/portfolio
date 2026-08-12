@@ -203,7 +203,6 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
 const SkillsMarquee = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
-  const hoveredRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragStartScrollRef = useRef(0);
   const pausedUntilRef = useRef(0);
@@ -220,7 +219,7 @@ const SkillsMarquee = () => {
     function tick(now: number) {
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
-      const shouldRun = !draggingRef.current && !hoveredRef.current && now > pausedUntilRef.current;
+      const shouldRun = !draggingRef.current && now > pausedUntilRef.current;
       if (shouldRun) {
         const half = track!.scrollWidth / 2;
         track!.scrollLeft += speed * dt;
@@ -242,7 +241,15 @@ const SkillsMarquee = () => {
   };
   const onMouseMove = (e: React.MouseEvent) => {
     const track = trackRef.current;
-    if (!draggingRef.current || !track) return;
+    if (!track) return;
+    if (!draggingRef.current) {
+      // Just hovering (not dragging): treat it like any other interaction —
+      // pause briefly and let auto-scroll resume on its own. A plain
+      // mouseenter alone gets a timed pause too (see onMouseEnter below);
+      // this only refreshes it while the cursor keeps moving.
+      settleAfterInteraction();
+      return;
+    }
     const half = track.scrollWidth / 2;
     let desired = dragStartScrollRef.current - (e.clientX - dragStartXRef.current);
     // Rebase rather than let a negative assignment get clamped to 0 by the
@@ -276,8 +283,8 @@ const SkillsMarquee = () => {
       ref={trackRef}
       className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none"
       style={{ touchAction: 'pan-x' }}
-      onMouseEnter={() => { hoveredRef.current = true; }}
-      onMouseLeave={() => { hoveredRef.current = false; endDrag(); }}
+      onMouseEnter={settleAfterInteraction}
+      onMouseLeave={endDrag}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={endDrag}
