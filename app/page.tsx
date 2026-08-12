@@ -501,7 +501,7 @@ const ScrollProgressRail = () => {
         <path d={wobblePath} fill="none" stroke="#22222226" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       </svg>
       <svg viewBox="0 0 24 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full overflow-visible">
-        <path ref={fillRef} d={wobblePath} fill="none" stroke="#D6431F" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        <path ref={fillRef} d={wobblePath} fill="none" stroke="#1D4ED8" strokeWidth="2.4" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       </svg>
       <svg
         ref={dotRef}
@@ -511,7 +511,6 @@ const ScrollProgressRail = () => {
       >
         <path d="M8,1.3 C11.2,1.1 13.3,3.9 13.1,8.2 C12.9,12.6 12.1,17.3 8,17.6 C3.9,17.3 3.1,12.6 2.9,8.2 C2.7,3.9 4.8,1.1 8,1.3 Z" fill="#ffffff" stroke="#111111" strokeWidth="1.4" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         <path d="M8,1.6 C8,3.4 8,5.6 8,7.4" fill="none" stroke="#111111" strokeWidth="1" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-        <path d="M8,3 L8,5.6" fill="none" stroke={ACCENT} strokeWidth="1.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       </svg>
     </div>
   );
