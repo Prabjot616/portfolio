@@ -604,7 +604,7 @@ const allSkills = [
 // Adjacent circled pills (Team Leadership/Product Engineering, React/Node.js) get
 // staggered label heights via `raised` so the handwritten notes don't collide.
 const skillHighlights: Record<string, { label: string; raised?: boolean }> = {
-  'Shopify App Development': { label: 'core focus' },
+  'AI Agent Systems': { label: 'core focus' },
   'Product Engineering': { label: 'day job' },
   'Team Leadership': { label: 'leading now', raised: true },
   'Node.js': { label: 'backend' },
