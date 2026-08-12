@@ -211,8 +211,13 @@ const MARQUEE_SPEED = 36; // px/second
 // take over `transform: translateX()` directly, then hand back control by
 // resuming the animation from a negative animation-delay computed to match
 // wherever the interaction left off — no visible jump either way.
+// Name of the JS-injected keyframes rule (see mount effect) — a distinct
+// name from the CSS-authored `skills-marquee` fallback in globals.css.
+const MARQUEE_KEYFRAME = 'skills-marquee-live';
+
 const SkillsMarquee = () => {
   const trackRef = useRef<HTMLDivElement>(null);
+  const styleElRef = useRef<HTMLStyleElement | null>(null);
   const durationRef = useRef(0);
   const frozenOffsetRef = useRef(0);
   const draggingRef = useRef(false);
@@ -258,7 +263,7 @@ const SkillsMarquee = () => {
     const offset = normalize(frozenOffsetRef.current, half);
     const progress = half > 0 ? offset / half : 0;
     track.style.transform = '';
-    track.style.animation = `skills-marquee ${durationRef.current}s linear infinite`;
+    track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
     track.style.animationDelay = `${-(progress * durationRef.current)}s`;
   };
 
@@ -274,19 +279,24 @@ const SkillsMarquee = () => {
     if (!track) return;
     const half = getHalf();
     durationRef.current = half / MARQUEE_SPEED;
-    // iOS Safari can leave a CSS animation "pending" and never actually play
-    // it if its properties (custom property, duration) are patched in the
-    // same tick the element — and its animate-* class — are first created,
-    // which is exactly what happens here since the whole page is gated
-    // behind `mounted` and this is the track's first paint. Tearing the
-    // animation down, forcing a style flush, then declaring it fresh (same
-    // trick as AnimatedSignature.replay()) reliably kicks it off instead of
-    // patching an instance Safari never started.
-    track.style.animation = 'none';
-    track.style.setProperty('--marquee-distance', `-${half}px`);
-    void track.offsetWidth;
-    track.style.animation = `skills-marquee ${durationRef.current}s linear infinite`;
+
+    // The travel distance is only known after measuring the track, so it
+    // can't be authored as a literal in globals.css. Feeding it in via a CSS
+    // custom property (`translateX(var(--marquee-distance))`) worked in
+    // Chromium but left the animation never actually starting on iOS
+    // Safari — a known class of WebKit bug where a custom property set via
+    // `element.style.setProperty()` isn't reliably picked up by an animated
+    // value that references it through var(). Injecting a real @keyframes
+    // rule with the pixel value already baked in as a literal sidesteps
+    // that indirection entirely.
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
+    document.head.appendChild(styleEl);
+    styleElRef.current = styleEl;
+
+    track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
     return () => {
+      styleEl.remove();
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
   }, []);
