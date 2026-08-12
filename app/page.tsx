@@ -211,13 +211,11 @@ const MARQUEE_SPEED = 36; // px/second
 // take over `transform: translateX()` directly, then hand back control by
 // resuming the animation from a negative animation-delay computed to match
 // wherever the interaction left off — no visible jump either way.
-// Name of the JS-injected keyframes rule (see mount effect) — a distinct
-// name from the CSS-authored `skills-marquee` fallback in globals.css.
-const MARQUEE_KEYFRAME = 'skills-marquee-live';
+// Name of the CSS-authored keyframes rule in globals.css.
+const MARQUEE_KEYFRAME = 'skills-marquee';
 
 const SkillsMarquee = () => {
   const trackRef = useRef<HTMLDivElement>(null);
-  const styleElRef = useRef<HTMLStyleElement | null>(null);
   const durationRef = useRef(0);
   const frozenOffsetRef = useRef(0);
   const draggingRef = useRef(false);
@@ -278,46 +276,45 @@ const SkillsMarquee = () => {
     const track = trackRef.current;
     if (!track) return;
 
-    // The travel distance is only known after measuring the track, so it
-    // can't be authored as a literal in globals.css. Feeding it in via a CSS
-    // custom property (`translateX(var(--marquee-distance))`) worked in
-    // Chromium but left the animation never actually starting on iOS
-    // Safari — a known class of WebKit bug where a custom property set via
-    // `element.style.setProperty()` isn't reliably picked up by an animated
-    // value that references it through var(). Injecting a real @keyframes
-    // rule with the pixel value already baked in as a literal sidesteps
-    // that indirection entirely.
-    const styleEl = document.createElement('style');
-    document.head.appendChild(styleEl);
-    styleElRef.current = styleEl;
-
-    // Re-measuring after mount matters, not just on mount: Fira Code loads
-    // via an unoptimized `@import url(...)` (no next/font preloading), so
-    // it can swap in and reflow the skill pills to a different width after
-    // this first pass. If the keyframe's baked travel distance is stale by
-    // then, the two duplicated copies stop lining up at the loop seam and
-    // the strip goes visibly blank there once a lap completes. Re-applying
-    // on fonts.ready (and on resize, for viewport-driven reflow) keeps the
-    // seam exact; skip while the user is actively interacting so this
-    // doesn't fight a freeze/drag in progress.
-    const apply = () => {
-      if (track.style.animation === 'none') return;
-      const prevOffset = normalize(readOffset(), getHalf());
+    // The keyframe (globals.css) animates to translateX(-50%), which now
+    // resolves correctly by construction: the track is `w-max` and the
+    // overflow-clipping viewport is a separate wrapper around it, so the
+    // track's own layout width always equals its full two-copies content
+    // width, and -50% always means "exactly one copy" — no matter when
+    // webfonts finish loading or the pills reflow to a different width.
+    // Only the *duration* still needs a JS measurement, to keep the visual
+    // speed constant (px/second) regardless of how wide the list ends up.
+    const applyDuration = () => {
       const half = getHalf();
       durationRef.current = half / MARQUEE_SPEED;
-      styleEl.textContent = `@keyframes ${MARQUEE_KEYFRAME} { to { transform: translateX(-${half}px); } }`;
-      const progress = half > 0 ? normalize(prevOffset, half) / half : 0;
-      track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
-      track.style.animationDelay = `${-(progress * durationRef.current)}s`;
+      track.style.animationDuration = `${durationRef.current}s`;
     };
+    applyDuration();
 
-    apply();
-    document.fonts?.ready?.then(apply);
-    window.addEventListener('resize', apply);
+    // iOS Safari can leave a CSS animation "pending" and never actually play
+    // it if its properties are patched in the same tick the element — and
+    // its animate-* class — are first created, which is exactly what
+    // happens here since the whole page is gated behind `mounted` and this
+    // is the track's first paint. Tearing the animation down, forcing a
+    // style flush, then declaring it fresh (same trick as
+    // AnimatedSignature.replay()) reliably kicks it off instead of patching
+    // an instance Safari never started.
+    track.style.animation = 'none';
+    void track.offsetWidth;
+    track.style.animation = `${MARQUEE_KEYFRAME} ${durationRef.current}s linear infinite`;
+
+    // Fira Code loads via an unoptimized `@import url(...)` (no next/font
+    // preloading), so it can swap in shortly after mount and nudge the
+    // pills' width slightly. Re-syncing the duration once fonts are ready
+    // keeps the speed accurate; it's cosmetic only now (the travel distance
+    // is always correct regardless), so there's no need to also watch
+    // `resize` here.
+    document.fonts?.ready?.then(() => {
+      if (track.style.animation === 'none') return; // don't fight an active freeze/drag
+      applyDuration();
+    });
 
     return () => {
-      window.removeEventListener('resize', apply);
-      styleEl.remove();
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     };
   }, []);
@@ -417,31 +414,33 @@ const SkillsMarquee = () => {
   };
 
   return (
-    <div
-      ref={trackRef}
-      className="flex overflow-hidden whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none animate-skills-marquee"
-      style={{ touchAction: 'pan-y', willChange: 'transform' }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={endDrag}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {items.map((skill, index) => {
-        const pill = (
-          <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge">
-            {skill}
-          </span>
-        );
-        const highlight = skillHighlights[skill];
-        return (
-          <span key={index} className="mx-3 flex-shrink-0">
-            {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
-          </span>
-        );
-      })}
+    <div className="overflow-hidden pt-12 pb-3">
+      <div
+        ref={trackRef}
+        className="flex w-max whitespace-nowrap cursor-grab active:cursor-grabbing select-none animate-skills-marquee"
+        style={{ touchAction: 'pan-y', willChange: 'transform' }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={endDrag}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {items.map((skill, index) => {
+          const pill = (
+            <span className="flex items-center justify-center h-11 px-5 rounded-full border-2 border-[#222222] text-[#111111] text-sm font-medium whitespace-nowrap bg-white font-mono skill-badge">
+              {skill}
+            </span>
+          );
+          const highlight = skillHighlights[skill];
+          return (
+            <span key={index} className="mx-3 flex-shrink-0">
+              {highlight ? <CircleLoop label={highlight.label} raised={highlight.raised}>{pill}</CircleLoop> : pill}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 };
