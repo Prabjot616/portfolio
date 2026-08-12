@@ -206,6 +206,7 @@ const SkillsMarquee = () => {
   const dragStartXRef = useRef(0);
   const dragStartScrollRef = useRef(0);
   const pausedUntilRef = useRef(0);
+  const touchStartXRef = useRef(0);
 
   const items = [...allSkills, ...allSkills];
 
@@ -277,6 +278,17 @@ const SkillsMarquee = () => {
     if (track.scrollLeft >= half) track.scrollLeft -= half;
     else if (track.scrollLeft <= 0) track.scrollLeft = half - 1;
   };
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    // A touch landing on this element doesn't necessarily mean the user
+    // wants to drag it — on a full-width strip, a plain vertical page-scroll
+    // swipe routinely starts here too, and pausing on touchstart alone froze
+    // the strip for the whole time someone scrolled past it. Only pause once
+    // the touch shows real horizontal movement.
+    if (Math.abs(e.touches[0].clientX - touchStartXRef.current) > 6) settleAfterInteraction();
+  };
 
   return (
     <div
@@ -289,8 +301,8 @@ const SkillsMarquee = () => {
       onMouseMove={onMouseMove}
       onMouseUp={endDrag}
       onScroll={onScroll}
-      onTouchStart={settleAfterInteraction}
-      onTouchEnd={settleAfterInteraction}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
     >
       {items.map((skill, index) => {
         const pill = (
