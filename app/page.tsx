@@ -274,7 +274,7 @@ const SkillsMarquee = () => {
   return (
     <div
       ref={trackRef}
-      className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 cursor-grab active:cursor-grabbing select-none"
+      className="flex overflow-x-scroll overflow-y-hidden scrollbar-hide whitespace-nowrap pt-12 pb-3 cursor-grab active:cursor-grabbing select-none"
       style={{ touchAction: 'pan-x' }}
       onMouseEnter={() => { hoveredRef.current = true; }}
       onMouseLeave={() => { hoveredRef.current = false; endDrag(); }}
