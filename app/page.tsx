@@ -107,8 +107,10 @@ const ACCENT = '#D6431F';
 
 // Marker-style scribble underline. Uses a tiled SVG background (not an overlay)
 // so it keeps working correctly if the wrapped phrase wraps across lines.
+// The tile is wide with irregular hump widths/heights so the repeat isn't
+// obviously mechanical, and the slopes are gentle (a real hand doesn't zigzag).
 const scribbleTile =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 14' width='40' height='14'%3E%3Cpath d='M0,7 C6,1 14,1 20,7 C26,13 34,13 40,7' fill='none' stroke='%23D6431F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%23D6431F' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span
@@ -116,7 +118,7 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
       backgroundImage: `url("${scribbleTile}")`,
       backgroundRepeat: 'repeat-x',
       backgroundPosition: '0 100%',
-      backgroundSize: '34px 12px',
+      backgroundSize: '120px 14px',
       paddingBottom: '3px',
       boxDecorationBreak: 'clone',
       WebkitBoxDecorationBreak: 'clone',
@@ -173,6 +175,34 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
       fill="#F6DCCE" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
     />
   </svg>
+);
+
+// Hand-drawn checkmark, replaces the solid square achievement bullet.
+const CheckMark = () => (
+  <svg width="20" height="18" viewBox="0 0 20 16" aria-hidden="true" className="flex-shrink-0 mt-1 transition-transform duration-300 group-hover:scale-125">
+    <path
+      d="M2,8 C4,11 6,13 8,14 C11,9 14,4 18,2"
+      fill="none" stroke={ACCENT} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// "Say hi" note-to-self arrow, pointing at the hero CTA.
+const HeroPointer = () => (
+  <div className="hidden md:block absolute -top-11 left-0 text-[#D6431F]" aria-hidden="true">
+    <span className="font-heading text-xl">say hi</span>
+    <svg width="90" height="54" viewBox="0 0 90 54" className="absolute left-0 top-4">
+      <defs>
+        <marker id="hero-arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L7,4 L0,7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </marker>
+      </defs>
+      <path
+        d="M6,6 C28,3 62,12 78,34" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+        markerEnd="url(#hero-arrowhead)"
+      />
+    </svg>
+  </div>
 );
 
 const personalInfo = {
@@ -410,11 +440,14 @@ export default function Portfolio() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 items-start animate-slide-up delay-200">
-              <a href={`mailto:${personalInfo.email}`}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white font-medium rounded-full hover-bg hover:bg-[#000000] border-2 border-[#111111] font-mono text-sm button-press transition-all duration-200">
-                <Mail className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
-                <span>Get in Touch</span>
-              </a>
+              <div className="relative">
+                <HeroPointer />
+                <a href={`mailto:${personalInfo.email}`}
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white font-medium rounded-full hover-bg hover:bg-[#000000] border-2 border-[#111111] font-mono text-sm button-press transition-all duration-200">
+                  <Mail className="h-5 w-5 transition-transform duration-200 group-hover:rotate-12" />
+                  <span>Get in Touch</span>
+                </a>
+              </div>
 
               <div className="flex gap-4">
                 <a href={personalInfo.linkedin} target="_blank" rel="noopener" className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#222222] text-[#222222] hover-border hover:border-[#111111] hover:text-[#111111] transition-all duration-300 icon-hover">
@@ -560,9 +593,10 @@ export default function Portfolio() {
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight">
               Education
             </h2>
-            <div className="space-y-16">
+            <div className="space-y-16 border-l-2 border-dashed border-[#222222]">
               {education.map((edu, idx) => (
-                <div key={idx} className="scroll-reveal border-l-2 border-[#222222] pl-6">
+                <div key={idx} className="scroll-reveal relative pl-8 group">
+                  <TimelinePin />
                   <h3 className="text-xl font-heading text-[#111111] mb-2">{edu.degree}</h3>
                   <p className="text-[#333333] font-medium mb-1">{edu.school}</p>
                   <p className="text-sm text-[#555555] font-mono">{edu.location} • {edu.period}</p>
@@ -577,7 +611,7 @@ export default function Portfolio() {
             <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
                 <li key={idx} className="scroll-reveal flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
-                  <span className="text-[#111111] text-lg mt-0.5 transition-transform duration-300 group-hover:scale-125">■</span>
+                  <CheckMark />
                   <span className="text-[#111111] leading-relaxed">{achieve}</span>
                 </li>
               ))}
@@ -626,7 +660,7 @@ export default function Portfolio() {
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t-2 border-[#333333] pt-12">
             <div className="space-y-4">
-              <a href={`mailto:${personalInfo.email}`} className="block text-2xl md:text-3xl text-[#dddddd] hover:text-white transition-all duration-300 link-underline">
+              <a href={`mailto:${personalInfo.email}`} className="inline-block text-2xl md:text-3xl text-[#dddddd] hover:text-white transition-all duration-300 footer-wavy-underline">
                 {personalInfo.email}
               </a>
             </div>

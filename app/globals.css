@@ -272,6 +272,20 @@ h4, h5, h6 {
   width: 100%;
 }
 
+/* Wavy marker-scribble hover underline (footer email) — slides up into view */
+.footer-wavy-underline {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDAgMTYiIHdpZHRoPSIxNDAiIGhlaWdodD0iMTYiPjxwYXRoIGQ9Ik0wLDkgQzEyLDYgMTgsMTIgMzIsOSBDNDIsNyA1MCwxMS41IDYyLDguNSBDNzQsNiA4NCwxMSA5OCw5IEMxMDgsNyAxMTgsMTEgMTMyLDguNSBDMTM2LDggMTM4LDkgMTQwLDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGN0E0RCIgc3Ryb2tlLXdpZHRoPSIyLjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==");
+  background-repeat: repeat-x;
+  background-position: 0 135%;
+  background-size: 120px 14px;
+  padding-bottom: 4px;
+  transition: background-position 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+}
+
+.footer-wavy-underline:hover {
+  background-position: 0 105%;
+}
+
 /* Skill badge hover */
 .skill-badge {
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
