@@ -1005,7 +1005,7 @@ export default function Portfolio() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mt-20 pt-8 border-t-2 border-[#333333]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-20 pt-8 border-t-2 border-[#333333]">
             <p className="text-xs text-[#888888] font-mono">
               ©{new Date().getFullYear()} PRABJOT KAUR
             </p>
