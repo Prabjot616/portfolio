@@ -455,6 +455,43 @@ const CheckMark = () => (
   </svg>
 );
 
+// Full-screen viewer for an achievement polaroid: clicking the small photo
+// flies an enlarged copy up into the center of the screen over a dimmed
+// backdrop. Closes on Escape (handled by the caller), backdrop click, or
+// the close button.
+const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; title: string; meta: string } | null; onClose: () => void }) => {
+  if (!photo) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-6 animate-fade-in"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Photo: ${photo.title}`}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+        className="absolute top-6 right-6 flex items-center justify-center w-11 h-11 rounded-full border-2 border-white text-white hover:bg-white hover:text-[#111111] transition-all duration-200"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <path d="M2,2 L16,16 M16,2 L2,16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </button>
+      <div
+        className="bg-white shadow-2xl animate-lightbox-in"
+        style={{ width: 'min(88vw, 380px)', padding: '16px 16px 56px' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img src={photo.src} alt="" className="block w-full object-cover" style={{ height: 'min(70vw, 340px)' }} />
+        <p className="font-heading text-2xl text-[#111111] text-center mt-4">{photo.title}</p>
+        <p className="text-xs text-[#555555] font-mono text-center mt-1">{photo.meta}</p>
+      </div>
+    </div>
+  );
+};
+
 // "Say hi" note-to-self arrow, pointing at the hero CTA.
 const HeroPointer = () => (
   <div className="hidden md:block absolute -top-11 left-0 text-[#1D4ED8]" aria-hidden="true">
@@ -663,6 +700,16 @@ export default function Portfolio() {
   const [mounted, setMounted] = useState(false);
   const leftColRef = useRef<HTMLDivElement>(null);
   const [rightHeight, setRightHeight] = useState<string>('600px');
+  const [openAchievementPhoto, setOpenAchievementPhoto] = useState<{ src: string; title: string; meta: string } | null>(null);
+
+  useEffect(() => {
+    if (!openAchievementPhoto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenAchievementPhoto(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [openAchievementPhoto]);
 
   useEffect(() => {
     setMounted(true);
@@ -884,16 +931,19 @@ export default function Portfolio() {
                     <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
                   </div>
                   {achieve.photo && (
-                    <div
-                      className="absolute -top-4 -right-3 bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)]"
+                    <button
+                      type="button"
+                      onClick={() => setOpenAchievementPhoto({ src: achieve.photo!, title: achieve.title, meta: achieve.meta })}
+                      className="absolute -top-4 -right-3 bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)] cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
                       style={{ width: '84px', padding: '6px 6px 20px', transform: `rotate(${achieve.photoRotate})` }}
+                      aria-label={`View photo for ${achieve.title}`}
                     >
                       <span
                         className="absolute left-1/2 bg-[#EAE3D3]"
                         style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
                       />
                       <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: '70px' }} />
-                    </div>
+                    </button>
                   )}
                 </li>
               ))}
@@ -965,6 +1015,8 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      <AchievementPhotoLightbox photo={openAchievementPhoto} onClose={() => setOpenAchievementPhoto(null)} />
     </main>
   );
 }
