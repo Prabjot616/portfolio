@@ -122,14 +122,14 @@ const TimelinePin = () => (
   </svg>
 );
 
-const ACCENT = '#D6431F';
+const ACCENT = '#1D4ED8';
 
 // Marker-style scribble underline. Uses a tiled SVG background (not an overlay)
 // so it keeps working correctly if the wrapped phrase wraps across lines.
 // The tile is wide with irregular hump widths/heights so the repeat isn't
 // obviously mechanical, and the slopes are gentle (a real hand doesn't zigzag).
 const scribbleTile =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%23D6431F' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 16' width='140' height='16'%3E%3Cpath d='M0,9 C12,6 18,12 32,9 C42,7 50,11.5 62,8.5 C74,6 84,11 98,9 C108,7 118,11 132,8.5 C136,8 138,9 140,9' fill='none' stroke='%231D4ED8' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span
@@ -167,7 +167,7 @@ const CircleLoop = ({ children, label, raised = false }: { children: React.React
   <span className="relative inline-flex">
     {label && (
       <span
-        className={`pointer-events-none absolute left-1 whitespace-nowrap font-heading text-lg leading-none text-[#D6431F] ${raised ? '-top-9' : '-top-6'}`}
+        className={`pointer-events-none absolute left-1 whitespace-nowrap font-heading text-lg leading-none text-[#1D4ED8] ${raised ? '-top-9' : '-top-6'}`}
       >
         {label} ↴
       </span>
@@ -175,7 +175,7 @@ const CircleLoop = ({ children, label, raised = false }: { children: React.React
     {children}
     <svg
       viewBox="0 0 140 70" preserveAspectRatio="none" aria-hidden="true"
-      className="pointer-events-none absolute text-[#D6431F]"
+      className="pointer-events-none absolute text-[#1D4ED8]"
       style={{ left: '-8px', right: '-8px', top: '-6px', bottom: '-6px', width: 'calc(100% + 16px)', height: 'calc(100% + 12px)' }}
     >
       <path
@@ -191,7 +191,7 @@ const CornerStar = ({ className = '', size = 42 }: { className?: string; size?: 
   <svg width={size} height={size} viewBox="0 0 46 46" aria-hidden="true" className={className}>
     <path
       d="M23,4 C24.5,12 22,15 30,16.5 C23,19 25,23 23,31 C21.5,23 19,20 12,17.5 C19,15.5 17,12 23,4 Z"
-      fill="#F6DCCE" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
+      fill="#DCE9F8" stroke={ACCENT} strokeWidth="1.6" strokeLinejoin="round"
     />
   </svg>
 );
@@ -458,7 +458,7 @@ const CheckMark = () => (
 
 // "Say hi" note-to-self arrow, pointing at the hero CTA.
 const HeroPointer = () => (
-  <div className="hidden md:block absolute -top-11 left-0 text-[#D6431F]" aria-hidden="true">
+  <div className="hidden md:block absolute -top-11 left-0 text-[#1D4ED8]" aria-hidden="true">
     <span className="font-heading text-xl">say hi</span>
     <svg width="90" height="54" viewBox="0 0 90 54" className="absolute left-0 top-4">
       <defs>
