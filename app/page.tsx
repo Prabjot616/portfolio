@@ -924,7 +924,7 @@ export default function Portfolio() {
             </h2>
             <ul className="space-y-8">
               {achievements.map((achieve, idx) => (
-                <li key={idx} className="scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default">
+                <li key={idx} className={`scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default ${achieve.photo ? 'pr-20 sm:pr-24' : ''}`}>
                   <CheckMark />
                   <div>
                     <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
