@@ -681,7 +681,8 @@ const MONTH_INDEX: Record<string, number> = {
   Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
   Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
 };
-const certDateValue = (date: string) => {
+const certDateValue = (date?: string) => {
+  if (!date) return -Infinity;
   const [mon, year] = date.split(' ');
   return Number(year) * 12 + (MONTH_INDEX[mon] ?? 0);
 };
@@ -705,8 +706,15 @@ const certifications = [
   { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
   { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
+  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ' },
+  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3' },
+  { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR' },
   { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
+  { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019' },
+  { name: 'Android Application development', issuer: 'Techtree Technologies' },
+  { name: 'Diploma in Computer Hardware', issuer: 'Byte Institute' },
 ].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
@@ -1017,7 +1025,7 @@ export default function Portfolio() {
                       {cert.name}
                     </h3>
                     <p className="text-xs text-[#555555]">
-                      <span className="font-mono">{cert.issuer} · {cert.date}</span>
+                      <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
                       {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
                     </p>
                   </div>
