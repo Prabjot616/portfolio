@@ -741,6 +741,7 @@ export default function Portfolio() {
   const certBoxRef = useRef<HTMLDivElement>(null);
   const certTabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [certMaskRect, setCertMaskRect] = useState<{ top: number; height: number }>({ top: 0, height: CERT_TAB_HEIGHT });
+  const [certTabHeights, setCertTabHeights] = useState<number[]>(CERT_CATEGORIES.map(() => CERT_TAB_HEIGHT));
 
   useEffect(() => {
     if (!openAchievementPhoto) return;
@@ -753,14 +754,17 @@ export default function Portfolio() {
 
   useEffect(() => {
     const updateMask = () => {
-      const activeIdx = CERT_CATEGORIES.indexOf(activeCertCategory);
       const boxEl = certBoxRef.current;
-      const tabEl = certTabRefs.current[activeIdx];
-      if (boxEl && tabEl) {
-        const boxRect = boxEl.getBoundingClientRect();
-        const tabRect = tabEl.getBoundingClientRect();
-        setCertMaskRect({ top: tabRect.top - boxRect.top, height: tabRect.height });
-      }
+      if (!boxEl) return;
+      const boxHeight = boxEl.getBoundingClientRect().height;
+      const count = CERT_CATEGORIES.length;
+      const base = Math.max(CERT_TAB_HEIGHT, Math.floor(boxHeight / count));
+      const heights = CERT_CATEGORIES.map((_, i) => (i === count - 1 ? boxHeight - base * (count - 1) : base));
+      setCertTabHeights(heights);
+
+      const activeIdx = CERT_CATEGORIES.indexOf(activeCertCategory);
+      const top = heights.slice(0, activeIdx).reduce((sum, h) => sum + h, 0);
+      setCertMaskRect({ top, height: heights[activeIdx] });
     };
     updateMask();
     window.addEventListener('resize', updateMask);
@@ -1095,12 +1099,12 @@ export default function Portfolio() {
                       type="button"
                       onClick={() => setActiveCertCategory(cat)}
                       aria-pressed={active}
-                      className={`flex-1 flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
+                      className={`flex-shrink-0 flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
                         active
                           ? 'bg-white text-[#111111] border-l-0 w-[54px]'
                           : 'bg-[#E7E1D3] text-[#333333] w-[46px] hover:bg-white'
                       }`}
-                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', minHeight: CERT_TAB_HEIGHT }}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', height: certTabHeights[i] ?? CERT_TAB_HEIGHT }}
                     >
                       {cat}
                     </button>
