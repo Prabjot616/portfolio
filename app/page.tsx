@@ -709,7 +709,7 @@ const certifications = [
   { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36 },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
   { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ' },
-  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3' },
+  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3', link: 'https://www.coursera.org/account/accomplishments/certificate/7LVLBPBBAXH3' },
   { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR' },
   { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
   { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019' },
