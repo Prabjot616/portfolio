@@ -688,6 +688,7 @@ const certDateValue = (date?: string) => {
 };
 
 const CERT_CATEGORIES = ['AI & Machine Learning', 'Game Development', 'Software & Web', 'Competitions & Education'] as const;
+const CERT_TAB_HEIGHT = 130;
 
 const certifications = [
   { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true, category: 'AI & Machine Learning' },
@@ -1018,60 +1019,68 @@ export default function Portfolio() {
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="scroll-reveal bg-white border-2 border-[#222222] border-r-0 flex-1 min-h-0 flex">
-              <div className="flex-1 min-w-0 overflow-y-auto p-8">
-                <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
-                  {certifications.filter((cert) => cert.category === activeCertCategory).map((cert, idx) => (
-                    <div key={idx} className="relative pl-8 group">
-                      <TimelinePin />
-                      <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
-                        {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
-                        {cert.name}
-                        {cert.image && (
-                          <button
-                            type="button"
-                            onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
-                            className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
-                            aria-label={`View certificate for ${cert.name}`}
-                          >
-                            <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
-                          </button>
-                        )}
-                        {cert.link && (
-                          <a
-                            href={cert.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
-                            aria-label={`Show credential for ${cert.name}`}
-                          >
-                            Show credential ↗
-                          </a>
-                        )}
-                      </h3>
-                      <p className="text-xs text-[#555555]">
-                        <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
-                        {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
-                      </p>
-                    </div>
-                  ))}
+            <div className="scroll-reveal flex-1 min-h-0 flex">
+              <div className="relative bg-white border-2 border-[#222222] flex-1 min-w-0 min-h-0 flex flex-col">
+                <div
+                  className="absolute bg-white z-10 pointer-events-none"
+                  style={{ right: '-2px', width: '4px', top: CERT_CATEGORIES.indexOf(activeCertCategory) * CERT_TAB_HEIGHT, height: CERT_TAB_HEIGHT }}
+                />
+                <div className="flex-1 min-h-0 overflow-y-auto p-8">
+                  <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
+                    {certifications.filter((cert) => cert.category === activeCertCategory).map((cert, idx) => (
+                      <div key={idx} className="relative pl-8 group">
+                        <TimelinePin />
+                        <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
+                          {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
+                          {cert.name}
+                          {cert.image && (
+                            <button
+                              type="button"
+                              onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
+                              className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
+                              aria-label={`View certificate for ${cert.name}`}
+                            >
+                              <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
+                            </button>
+                          )}
+                          {cert.link && (
+                            <a
+                              href={cert.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
+                              aria-label={`Show credential for ${cert.name}`}
+                            >
+                              Show credential ↗
+                            </a>
+                          )}
+                        </h3>
+                        <p className="text-xs text-[#555555]">
+                          <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
+                          {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col flex-shrink-0 gap-3.5 py-5">
-                {CERT_CATEGORIES.map((cat) => {
+              <div className="flex flex-col flex-shrink-0 self-start">
+                {CERT_CATEGORIES.map((cat, i) => {
                   const active = cat === activeCertCategory;
+                  const isFirst = i === 0;
+                  const isLast = i === CERT_CATEGORIES.length - 1;
                   return (
                     <button
                       key={cat}
                       type="button"
                       onClick={() => setActiveCertCategory(cat)}
                       aria-pressed={active}
-                      className={`flex-1 min-h-[64px] flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center rounded-r-lg border-2 border-[#222222] transition-colors duration-200 ${
+                      className={`flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
                         active
-                          ? 'bg-white text-[#111111] border-l-0 shadow-[2px_2px_0_rgba(0,0,0,0.12)] w-10'
-                          : 'bg-[#F4F1EA] text-[#333333] w-[34px] hover:bg-white'
+                          ? 'bg-white text-[#111111] border-l-0 w-[54px]'
+                          : 'bg-[#E7E1D3] text-[#333333] w-[46px] hover:bg-white'
                       }`}
-                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', height: CERT_TAB_HEIGHT }}
                     >
                       {cat}
                     </button>
