@@ -691,7 +691,7 @@ const CERT_CATEGORIES = ['AI & Machine Learning', 'Game Development', 'Software 
 const CERT_TAB_HEIGHT = 130;
 
 const certifications = [
-  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', category: 'AI & Machine Learning', image: '/images/certifications/google-cloud-gen-ai-academy-apac.jpg', imageAspect: 1.4, link: 'https://certificate.hack2skill.com/verify/2026H2S07GCGENAIAPACC2-P02586' },
   { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', category: 'AI & Machine Learning' },
   { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
   { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture', category: 'Software & Web' },
