@@ -455,6 +455,30 @@ const CheckMark = () => (
   </svg>
 );
 
+// Small wood-grain picture frame for an achievement certificate memento —
+// the counterpart to the taped polaroid used for photos. Corner "miter"
+// marks suggest a real frame's joined edges.
+const WoodFrame = ({ src, size = 84, aspect = 0.78 }: { src: string; size?: number; aspect?: number }) => (
+  <div
+    className="relative"
+    style={{
+      width: size,
+      padding: '7px',
+      background: 'linear-gradient(155deg, #C79A66, #8B6239 55%, #6B4A2E)',
+      boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.25), 0 5px 12px rgba(0,0,0,0.25)',
+    }}
+  >
+    <img
+      src={src} alt="" className="block w-full"
+      style={{ aspectRatio: aspect, border: '1px solid rgba(0,0,0,0.3)' }}
+    />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-b-0" style={{ top: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-b-0" style={{ top: 2, right: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-t-0" style={{ bottom: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-t-0" style={{ bottom: 2, right: 2 }} />
+  </div>
+);
+
 // Full-screen viewer for an achievement polaroid: clicking the small photo
 // flies an enlarged copy up into the center of the screen over a dimmed
 // backdrop. Closes on Escape (handled by the caller), backdrop click, or
@@ -978,10 +1002,7 @@ export default function Portfolio() {
                             }}
                             aria-label={`View certificate for ${achieve.title}`}
                           >
-                            <img
-                              src={achieve.certificate} alt="" className="block bg-white border-2 border-[#222222] shadow-[0_5px_12px_rgba(0,0,0,0.22)]"
-                              style={{ width: combined ? 54 : 84, aspectRatio: achieve.certAspect ?? 0.78 }}
-                            />
+                            <WoodFrame src={achieve.certificate} size={combined ? 54 : 84} aspect={achieve.certAspect} />
                           </button>
                         )}
                         {achieve.photo && (
