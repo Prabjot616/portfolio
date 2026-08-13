@@ -738,6 +738,9 @@ export default function Portfolio() {
   const [rightHeight, setRightHeight] = useState<string>('600px');
   const [openAchievementPhoto, setOpenAchievementPhoto] = useState<{ src: string; title: string; meta: string } | null>(null);
   const [activeCertCategory, setActiveCertCategory] = useState<(typeof CERT_CATEGORIES)[number]>(CERT_CATEGORIES[0]);
+  const certBoxRef = useRef<HTMLDivElement>(null);
+  const certTabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [certMaskRect, setCertMaskRect] = useState<{ top: number; height: number }>({ top: 0, height: CERT_TAB_HEIGHT });
 
   useEffect(() => {
     if (!openAchievementPhoto) return;
@@ -747,6 +750,22 @@ export default function Portfolio() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [openAchievementPhoto]);
+
+  useEffect(() => {
+    const updateMask = () => {
+      const activeIdx = CERT_CATEGORIES.indexOf(activeCertCategory);
+      const boxEl = certBoxRef.current;
+      const tabEl = certTabRefs.current[activeIdx];
+      if (boxEl && tabEl) {
+        const boxRect = boxEl.getBoundingClientRect();
+        const tabRect = tabEl.getBoundingClientRect();
+        setCertMaskRect({ top: tabRect.top - boxRect.top, height: tabRect.height });
+      }
+    };
+    updateMask();
+    window.addEventListener('resize', updateMask);
+    return () => window.removeEventListener('resize', updateMask);
+  }, [activeCertCategory, rightHeight]);
 
   useEffect(() => {
     setMounted(true);
@@ -1020,10 +1039,10 @@ export default function Portfolio() {
               Certifications
             </h2>
             <div className="scroll-reveal flex-1 min-h-0 flex">
-              <div className="relative bg-white border-2 border-[#222222] flex-1 min-w-0 min-h-0 flex flex-col">
+              <div ref={certBoxRef} className="relative bg-white border-2 border-[#222222] flex-1 min-w-0 min-h-0 flex flex-col">
                 <div
                   className="absolute bg-white z-10 pointer-events-none"
-                  style={{ right: '-2px', width: '4px', top: CERT_CATEGORIES.indexOf(activeCertCategory) * CERT_TAB_HEIGHT, height: CERT_TAB_HEIGHT }}
+                  style={{ right: '-2px', width: '4px', top: certMaskRect.top, height: certMaskRect.height }}
                 />
                 <div className="flex-1 min-h-0 overflow-y-auto p-8">
                   <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
@@ -1064,7 +1083,7 @@ export default function Portfolio() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col flex-shrink-0 self-start">
+              <div className="flex flex-col flex-shrink-0">
                 {CERT_CATEGORIES.map((cat, i) => {
                   const active = cat === activeCertCategory;
                   const isFirst = i === 0;
@@ -1072,15 +1091,16 @@ export default function Portfolio() {
                   return (
                     <button
                       key={cat}
+                      ref={(el) => { certTabRefs.current[i] = el; }}
                       type="button"
                       onClick={() => setActiveCertCategory(cat)}
                       aria-pressed={active}
-                      className={`flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
+                      className={`flex-1 flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
                         active
                           ? 'bg-white text-[#111111] border-l-0 w-[54px]'
                           : 'bg-[#E7E1D3] text-[#333333] w-[46px] hover:bg-white'
                       }`}
-                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', height: CERT_TAB_HEIGHT }}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', minHeight: CERT_TAB_HEIGHT }}
                     >
                       {cat}
                     </button>
