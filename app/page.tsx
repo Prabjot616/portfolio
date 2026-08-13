@@ -715,7 +715,7 @@ const achievements = [
   { title: 'AWS AI Practitioner Certified', meta: '2024' },
   { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23', photo: '/images/achievements/employee-2022-23.jpg', photoRotate: '-7deg' },
   { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21', certificate: '/images/achievements/cert-star-performer.jpg', photoRotate: '-4deg' },
-  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', photoRotate: '5deg' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', certificate: '/images/achievements/cert-employee-2020-21.jpg', photoRotate: '5deg' },
   { title: 'Academic Excellence Award', meta: 'BCA · 2017–18', photo: '/images/achievements/academic-excellence.jpg', photoRotate: '-6deg' },
   { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
 ];
