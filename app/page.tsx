@@ -687,34 +687,36 @@ const certDateValue = (date?: string) => {
   return Number(year) * 12 + (MONTH_INDEX[mon] ?? 0);
 };
 
+const CERT_CATEGORIES = ['AI & Machine Learning', 'Game Development', 'Software & Web', 'Competitions & Education'] as const;
+
 const certifications = [
-  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true },
-  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true },
-  { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)' },
-  { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture' },
-  { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)' },
-  { name: 'Career Essentials in Generative AI by Microsoft and LinkedIn', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering' },
-  { name: 'Ethics in the Age of Generative AI', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Responsible AI · Computer Ethics · Generative AI' },
-  { name: 'Learning Microsoft 365 Copilot and Business Chat', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Office 365 · Microsoft Copilot' },
-  { name: 'Streamlining Your Work with Microsoft Copilot', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'AI for Business · AI Productivity · Generative AI' },
-  { name: 'Generative AI: The Evolution of Thoughtful Online Search', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Search Engine Technology · AI for Business' },
-  { name: 'What Is Generative AI?', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Generative AI Tools · Artificial Intelligence (AI)' },
-  { name: 'AI Algorithms for Gaming', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Algorithms' },
-  { name: 'SSL Certificates for Web Developers', issuer: 'LinkedIn', date: 'Nov 2023', skills: 'Transport Layer Security (TLS)' },
-  { name: 'Learning Docker', issuer: 'LinkedIn', date: 'Jul 2023', skills: 'Docker Products' },
-  { name: 'Game Development Foundations: Game-Related Math', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Game Development' },
-  { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
-  { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
-  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
-  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36 },
-  { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
-  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ' },
-  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3', link: 'https://www.coursera.org/account/accomplishments/certificate/7LVLBPBBAXH3' },
-  { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR' },
-  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
-  { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019' },
-  { name: 'Android Application development', issuer: 'Techtree Technologies' },
-  { name: 'Diploma in Computer Hardware', issuer: 'Byte Institute' },
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true, category: 'AI & Machine Learning' },
+  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true, category: 'AI & Machine Learning' },
+  { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
+  { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture', category: 'Software & Web' },
+  { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)', category: 'AI & Machine Learning' },
+  { name: 'Career Essentials in Generative AI by Microsoft and LinkedIn', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering', category: 'AI & Machine Learning' },
+  { name: 'Ethics in the Age of Generative AI', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Responsible AI · Computer Ethics · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Learning Microsoft 365 Copilot and Business Chat', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Office 365 · Microsoft Copilot', category: 'AI & Machine Learning' },
+  { name: 'Streamlining Your Work with Microsoft Copilot', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'AI for Business · AI Productivity · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Generative AI: The Evolution of Thoughtful Online Search', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Search Engine Technology · AI for Business', category: 'AI & Machine Learning' },
+  { name: 'What Is Generative AI?', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Generative AI Tools · Artificial Intelligence (AI)', category: 'AI & Machine Learning' },
+  { name: 'AI Algorithms for Gaming', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Algorithms', category: 'AI & Machine Learning' },
+  { name: 'SSL Certificates for Web Developers', issuer: 'LinkedIn', date: 'Nov 2023', skills: 'Transport Layer Security (TLS)', category: 'Software & Web' },
+  { name: 'Learning Docker', issuer: 'LinkedIn', date: 'Jul 2023', skills: 'Docker Products', category: 'Software & Web' },
+  { name: 'Game Development Foundations: Game-Related Math', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Game Development', category: 'Game Development' },
+  { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics', category: 'Software & Web' },
+  { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36, category: 'AI & Machine Learning' },
+  { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38', category: 'Game Development' },
+  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ', category: 'Game Development' },
+  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3', link: 'https://www.coursera.org/account/accomplishments/certificate/7LVLBPBBAXH3', category: 'Game Development' },
+  { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR', category: 'Game Development' },
+  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj', category: 'Competitions & Education' },
+  { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019', category: 'Software & Web' },
+  { name: 'Android Application development', issuer: 'Techtree Technologies', category: 'Software & Web' },
+  { name: 'Diploma in Computer Hardware', issuer: 'Byte Institute', category: 'Competitions & Education' },
 ].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
@@ -734,6 +736,7 @@ export default function Portfolio() {
   const leftColRef = useRef<HTMLDivElement>(null);
   const [rightHeight, setRightHeight] = useState<string>('600px');
   const [openAchievementPhoto, setOpenAchievementPhoto] = useState<{ src: string; title: string; meta: string } | null>(null);
+  const [activeCertCategory, setActiveCertCategory] = useState<(typeof CERT_CATEGORIES)[number]>(CERT_CATEGORIES[0]);
 
   useEffect(() => {
     if (!openAchievementPhoto) return;
@@ -1015,45 +1018,70 @@ export default function Portfolio() {
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="scroll-reveal bg-white border-2 border-[#222222] p-8 flex-1 min-h-0 overflow-y-auto">
-              <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
-                {certifications.map((cert, idx) => (
-                  <div key={idx} className="relative pl-8 group">
-                    <TimelinePin />
-                    <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
-                      {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
-                      {cert.name}
-                      {cert.image && (
-                        <button
-                          type="button"
-                          onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
-                          className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
-                          aria-label={`View certificate for ${cert.name}`}
-                        >
-                          <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
-                        </button>
-                      )}
-                      {cert.link && (
-                        <a
-                          href={cert.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
-                          aria-label={`Show credential for ${cert.name}`}
-                        >
-                          Show credential ↗
-                        </a>
-                      )}
-                    </h3>
-                    <p className="text-xs text-[#555555]">
-                      <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
-                      {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
-                    </p>
-                  </div>
-                ))}
+            <div className="scroll-reveal bg-white border-2 border-[#222222] border-r-0 flex-1 min-h-0 flex">
+              <div className="flex-1 min-w-0 overflow-y-auto p-8">
+                <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
+                  {certifications.filter((cert) => cert.category === activeCertCategory).map((cert, idx) => (
+                    <div key={idx} className="relative pl-8 group">
+                      <TimelinePin />
+                      <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
+                        {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
+                        {cert.name}
+                        {cert.image && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
+                            className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
+                            aria-label={`View certificate for ${cert.name}`}
+                          >
+                            <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
+                          </button>
+                        )}
+                        {cert.link && (
+                          <a
+                            href={cert.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
+                            aria-label={`Show credential for ${cert.name}`}
+                          >
+                            Show credential ↗
+                          </a>
+                        )}
+                      </h3>
+                      <p className="text-xs text-[#555555]">
+                        <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
+                        {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col flex-shrink-0 gap-3.5 py-5">
+                {CERT_CATEGORIES.map((cat) => {
+                  const active = cat === activeCertCategory;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setActiveCertCategory(cat)}
+                      aria-pressed={active}
+                      className={`flex-1 min-h-[64px] flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center rounded-r-lg border-2 border-[#222222] transition-colors duration-200 ${
+                        active
+                          ? 'bg-white text-[#111111] border-l-0 shadow-[2px_2px_0_rgba(0,0,0,0.12)] w-10'
+                          : 'bg-[#F4F1EA] text-[#333333] w-[34px] hover:bg-white'
+                      }`}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-            <p className="text-xs text-[#555555] mt-4 uppercase tracking-wide font-mono">Scroll to view all {certifications.length} certifications</p>
+            <p className="text-xs text-[#555555] mt-4 uppercase tracking-wide font-mono">
+              Scroll to view all {certifications.filter((cert) => cert.category === activeCertCategory).length} certifications in {activeCertCategory}
+            </p>
           </div>
         </div>
       </section>
