@@ -508,7 +508,7 @@ const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; ti
             <path d="M2,2 L16,16 M16,2 L2,16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
-        <img src={photo.src} alt="" className="block w-full object-cover" style={{ height: 'min(70vw, 340px)' }} />
+        <img src={photo.src} alt="" className="block w-full h-auto" style={{ maxHeight: '70vh', objectFit: 'contain' }} />
         <p className="font-heading text-2xl text-[#111111] text-center mt-4">{photo.title}</p>
         <p className="text-xs text-[#555555] font-mono text-center mt-1">{photo.meta}</p>
       </div>
@@ -990,7 +990,7 @@ export default function Portfolio() {
                       <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
                     </div>
                     {hasMemento && (
-                      <div className="absolute -top-4 -right-3 flex items-end">
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-3 flex items-end">
                         {achieve.certificate && (
                           <button
                             type="button"
