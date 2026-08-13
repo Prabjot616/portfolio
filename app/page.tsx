@@ -1053,7 +1053,7 @@ export default function Portfolio() {
                           {cert.name}
                         </h3>
                         {(cert.images || cert.link) && (
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
                             {cert.images?.map((src, imgIdx) => (
                               <button
                                 key={src}
