@@ -706,7 +706,7 @@ const certifications = [
   { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
   { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
-  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
   { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ' },
   { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3' },
@@ -1023,6 +1023,16 @@ export default function Portfolio() {
                     <h3 className="text-[#111111] font-heading text-lg mb-1 flex items-center gap-1.5">
                       {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
                       {cert.name}
+                      {cert.image && (
+                        <button
+                          type="button"
+                          onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
+                          className="flex-shrink-0 w-6 h-6 border border-[#222222] overflow-hidden cursor-zoom-in hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)] transition-shadow duration-200"
+                          aria-label={`View certificate for ${cert.name}`}
+                        >
+                          <img src={cert.image} alt="" className="block w-full h-full object-cover" />
+                        </button>
+                      )}
                     </h3>
                     <p className="text-xs text-[#555555]">
                       <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
