@@ -459,6 +459,30 @@ const CheckMark = () => (
 // flies an enlarged copy up into the center of the screen over a dimmed
 // backdrop. Closes on Escape (handled by the caller), backdrop click, or
 // the close button.
+// Small wood-grain picture frame for a certificate memento — the
+// counterpart to the taped polaroid used for photos. Corner "miter" marks
+// suggest a real frame's joined edges.
+const WoodFrame = ({ src, size = 84, aspect = 0.78 }: { src: string; size?: number; aspect?: number }) => (
+  <div
+    className="relative"
+    style={{
+      width: size,
+      padding: '7px',
+      background: 'linear-gradient(155deg, #C79A66, #8B6239 55%, #6B4A2E)',
+      boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.25), 0 5px 12px rgba(0,0,0,0.25)',
+    }}
+  >
+    <img
+      src={src} alt="" className="block w-full"
+      style={{ aspectRatio: aspect, border: '1px solid rgba(0,0,0,0.3)' }}
+    />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-b-0" style={{ top: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-b-0" style={{ top: 2, right: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-t-0" style={{ bottom: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-t-0" style={{ bottom: 2, right: 2 }} />
+  </div>
+);
+
 const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; title: string; meta: string } | null; onClose: () => void }) => {
   if (!photo) return null;
   return (
@@ -657,42 +681,54 @@ const MONTH_INDEX: Record<string, number> = {
   Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
   Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
 };
-const certDateValue = (date: string) => {
+const certDateValue = (date?: string) => {
+  if (!date) return -Infinity;
   const [mon, year] = date.split(' ');
   return Number(year) * 12 + (MONTH_INDEX[mon] ?? 0);
 };
 
+const CERT_CATEGORIES = ['AI & Machine Learning', 'Game Development', 'Software & Web', 'Competitions & Education'] as const;
+const CERT_TAB_HEIGHT = 130;
+
 const certifications = [
-  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true },
-  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true },
-  { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)' },
-  { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture' },
-  { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)' },
-  { name: 'Career Essentials in Generative AI by Microsoft and LinkedIn', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering' },
-  { name: 'Ethics in the Age of Generative AI', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Responsible AI · Computer Ethics · Generative AI' },
-  { name: 'Learning Microsoft 365 Copilot and Business Chat', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Office 365 · Microsoft Copilot' },
-  { name: 'Streamlining Your Work with Microsoft Copilot', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'AI for Business · AI Productivity · Generative AI' },
-  { name: 'Generative AI: The Evolution of Thoughtful Online Search', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Search Engine Technology · AI for Business' },
-  { name: 'What Is Generative AI?', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Generative AI Tools · Artificial Intelligence (AI)' },
-  { name: 'AI Algorithms for Gaming', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Algorithms' },
-  { name: 'SSL Certificates for Web Developers', issuer: 'LinkedIn', date: 'Nov 2023', skills: 'Transport Layer Security (TLS)' },
-  { name: 'Learning Docker', issuer: 'LinkedIn', date: 'Jul 2023', skills: 'Docker Products' },
-  { name: 'Game Development Foundations: Game-Related Math', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Game Development' },
-  { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
-  { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
-  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
-  { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
-  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true, category: 'AI & Machine Learning' },
+  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true, category: 'AI & Machine Learning' },
+  { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
+  { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture', category: 'Software & Web' },
+  { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)', category: 'AI & Machine Learning' },
+  { name: 'Career Essentials in Generative AI by Microsoft and LinkedIn', issuer: 'Microsoft', date: 'May 2025', skills: 'Prompt Engineering', category: 'AI & Machine Learning' },
+  { name: 'Ethics in the Age of Generative AI', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Responsible AI · Computer Ethics · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Learning Microsoft 365 Copilot and Business Chat', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Office 365 · Microsoft Copilot', category: 'AI & Machine Learning' },
+  { name: 'Streamlining Your Work with Microsoft Copilot', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'AI for Business · AI Productivity · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Generative AI: The Evolution of Thoughtful Online Search', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Search Engine Technology · AI for Business', category: 'AI & Machine Learning' },
+  { name: 'What Is Generative AI?', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Generative AI Tools · Artificial Intelligence (AI)', category: 'AI & Machine Learning' },
+  { name: 'AI Algorithms for Gaming', issuer: 'LinkedIn', date: 'Apr 2025', skills: 'Algorithms', category: 'AI & Machine Learning' },
+  { name: 'SSL Certificates for Web Developers', issuer: 'LinkedIn', date: 'Nov 2023', skills: 'Transport Layer Security (TLS)', category: 'Software & Web' },
+  { name: 'Learning Docker', issuer: 'LinkedIn', date: 'Jul 2023', skills: 'Docker Products', category: 'Software & Web' },
+  { name: 'Game Development Foundations: Game-Related Math', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Game Development', category: 'Game Development' },
+  { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics', category: 'Software & Web' },
+  { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI', category: 'AI & Machine Learning' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36, category: 'AI & Machine Learning' },
+  { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38', category: 'Game Development' },
+  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ', category: 'Game Development' },
+  { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3', link: 'https://www.coursera.org/account/accomplishments/certificate/7LVLBPBBAXH3', category: 'Game Development' },
+  { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR', category: 'Game Development' },
+  { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj', category: 'Competitions & Education' },
+  { name: 'Master the Mainframe 2018 - Part 2', issuer: 'IBM', date: 'Jan 2019', category: 'Software & Web' },
+  { name: 'Android Application development', issuer: 'Techtree Technologies', category: 'Software & Web' },
+  { name: 'Diploma in Computer Hardware', issuer: 'Byte Institute', category: 'Competitions & Education' },
 ].sort((a, b) => certDateValue(b.date) - certDateValue(a.date));
 
 const achievements = [
   { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26', photo: '/images/achievements/mentor-of-the-year.jpg', photoRotate: '6deg' },
   { title: 'Top 100 Finalist, Google APAC Hackathon', meta: 'AI/SEO Analysis Pipeline' },
-  { title: 'AWS AI Practitioner Certified', meta: '2024' },
   { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23', photo: '/images/achievements/employee-2022-23.jpg', photoRotate: '-7deg' },
-  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21' },
-  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', photoRotate: '5deg' },
+  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21', certificate: '/images/achievements/cert-star-performer.jpg', certAspect: 0.79, photoRotate: '-4deg' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', certificate: '/images/achievements/cert-employee-2020-21.jpg', certAspect: 0.77, photoRotate: '5deg' },
   { title: 'Academic Excellence Award', meta: 'BCA · 2017–18', photo: '/images/achievements/academic-excellence.jpg', photoRotate: '-6deg' },
+  { title: 'Academic Excellence Award', meta: 'BCA · 2016–17', certificate: '/images/achievements/cert-academic-excellence-2016-17.jpg', certAspect: 0.67, photoRotate: '5deg' },
+  { title: 'Ram Avtar Gupt Pratibha Puruskar', meta: 'Agrasain Balika Siksha Sadan · 2014', certificate: '/images/achievements/cert-ram-avtar-gupt-puruskar.jpg', certAspect: 1.27, photoRotate: '-5deg' },
   { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
 ];
 
@@ -701,6 +737,10 @@ export default function Portfolio() {
   const leftColRef = useRef<HTMLDivElement>(null);
   const [rightHeight, setRightHeight] = useState<string>('600px');
   const [openAchievementPhoto, setOpenAchievementPhoto] = useState<{ src: string; title: string; meta: string } | null>(null);
+  const [activeCertCategory, setActiveCertCategory] = useState<(typeof CERT_CATEGORIES)[number]>(CERT_CATEGORIES[0]);
+  const certBoxRef = useRef<HTMLDivElement>(null);
+  const certTabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [certMaskRect, setCertMaskRect] = useState<{ top: number; height: number }>({ top: 0, height: CERT_TAB_HEIGHT });
 
   useEffect(() => {
     if (!openAchievementPhoto) return;
@@ -710,6 +750,22 @@ export default function Portfolio() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [openAchievementPhoto]);
+
+  useEffect(() => {
+    const updateMask = () => {
+      const activeIdx = CERT_CATEGORIES.indexOf(activeCertCategory);
+      const boxEl = certBoxRef.current;
+      const tabEl = certTabRefs.current[activeIdx];
+      if (boxEl && tabEl) {
+        const boxRect = boxEl.getBoundingClientRect();
+        const tabRect = tabEl.getBoundingClientRect();
+        setCertMaskRect({ top: tabRect.top - boxRect.top, height: tabRect.height });
+      }
+    };
+    updateMask();
+    window.addEventListener('resize', updateMask);
+    return () => window.removeEventListener('resize', updateMask);
+  }, [activeCertCategory, rightHeight]);
 
   useEffect(() => {
     setMounted(true);
@@ -923,30 +979,57 @@ export default function Portfolio() {
               Achievements
             </h2>
             <ul className="space-y-8">
-              {achievements.map((achieve, idx) => (
-                <li key={idx} className={`scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default ${achieve.photo ? 'pr-20 sm:pr-24' : ''}`}>
-                  <CheckMark />
-                  <div>
-                    <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
-                    <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
-                  </div>
-                  {achieve.photo && (
-                    <button
-                      type="button"
-                      onClick={() => setOpenAchievementPhoto({ src: achieve.photo!, title: achieve.title, meta: achieve.meta })}
-                      className="absolute -top-4 -right-3 bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)] cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
-                      style={{ width: '84px', padding: '6px 6px 20px', transform: `rotate(${achieve.photoRotate})` }}
-                      aria-label={`View photo for ${achieve.title}`}
-                    >
-                      <span
-                        className="absolute left-1/2 bg-[#EAE3D3]"
-                        style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
-                      />
-                      <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: '70px' }} />
-                    </button>
-                  )}
-                </li>
-              ))}
+              {achievements.map((achieve, idx) => {
+                const hasMemento = !!(achieve.photo || achieve.certificate);
+                const combined = !!(achieve.photo && achieve.certificate);
+                return (
+                  <li key={idx} className={`scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default ${hasMemento ? 'pr-20 sm:pr-24' : ''}`}>
+                    <CheckMark />
+                    <div>
+                      <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
+                      <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
+                    </div>
+                    {hasMemento && (
+                      <div className="absolute -top-4 -right-3 flex items-end">
+                        {achieve.certificate && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenAchievementPhoto({ src: achieve.certificate!, title: achieve.title, meta: achieve.meta })}
+                            className="cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
+                            style={{
+                              transform: combined ? 'rotate(-7deg) translateX(14px)' : `rotate(${achieve.photoRotate})`,
+                              zIndex: combined ? 1 : 2,
+                            }}
+                            aria-label={`View certificate for ${achieve.title}`}
+                          >
+                            <WoodFrame src={achieve.certificate} size={combined ? 54 : 84} aspect={achieve.certAspect} />
+                          </button>
+                        )}
+                        {achieve.photo && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenAchievementPhoto({ src: achieve.photo!, title: achieve.title, meta: achieve.meta })}
+                            className="relative bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)] cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
+                            style={{
+                              width: combined ? '66px' : '84px',
+                              padding: combined ? '5px 5px 16px' : '6px 6px 20px',
+                              transform: `rotate(${achieve.photoRotate})`,
+                              zIndex: 2,
+                            }}
+                            aria-label={`View photo for ${achieve.title}`}
+                          >
+                            <span
+                              className="absolute left-1/2 bg-[#EAE3D3]"
+                              style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
+                            />
+                            <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: combined ? '54px' : '70px' }} />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -955,24 +1038,79 @@ export default function Portfolio() {
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="scroll-reveal bg-white border-2 border-[#222222] p-8 flex-1 min-h-0 overflow-y-auto">
-              <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
-                {certifications.map((cert, idx) => (
-                  <div key={idx} className="relative pl-8 group">
-                    <TimelinePin />
-                    <h3 className="text-[#111111] font-heading text-lg mb-1 flex items-center gap-1.5">
-                      {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
-                      {cert.name}
-                    </h3>
-                    <p className="text-xs text-[#555555]">
-                      <span className="font-mono">{cert.issuer} · {cert.date}</span>
-                      {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
-                    </p>
+            <div className="scroll-reveal flex-1 min-h-0 flex" style={{ minHeight: CERT_CATEGORIES.length * CERT_TAB_HEIGHT }}>
+              <div ref={certBoxRef} className="relative bg-white border-2 border-[#222222] flex-1 min-w-0 min-h-0 flex flex-col">
+                <div
+                  className="absolute bg-white z-10 pointer-events-none"
+                  style={{ right: '-2px', width: '4px', top: certMaskRect.top, height: certMaskRect.height }}
+                />
+                <div className="flex-1 min-h-0 overflow-y-auto p-8">
+                  <div className="space-y-6 border-l-2 border-dashed border-[#222222]">
+                    {certifications.filter((cert) => cert.category === activeCertCategory).map((cert, idx) => (
+                      <div key={idx} className="relative pl-8 group">
+                        <TimelinePin />
+                        <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
+                          {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
+                          {cert.name}
+                          {cert.image && (
+                            <button
+                              type="button"
+                              onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
+                              className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
+                              aria-label={`View certificate for ${cert.name}`}
+                            >
+                              <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
+                            </button>
+                          )}
+                          {cert.link && (
+                            <a
+                              href={cert.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
+                              aria-label={`Show credential for ${cert.name}`}
+                            >
+                              Show credential ↗
+                            </a>
+                          )}
+                        </h3>
+                        <p className="text-xs text-[#555555]">
+                          <span className="font-mono">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
+                          {cert.skills && <span className="text-[#333333] text-sm"> · {cert.skills}</span>}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              </div>
+              <div className="flex flex-col flex-shrink-0 justify-start">
+                {CERT_CATEGORIES.map((cat, i) => {
+                  const active = cat === activeCertCategory;
+                  const isFirst = i === 0;
+                  const isLast = i === CERT_CATEGORIES.length - 1;
+                  return (
+                    <button
+                      key={cat}
+                      ref={(el) => { certTabRefs.current[i] = el; }}
+                      type="button"
+                      onClick={() => setActiveCertCategory(cat)}
+                      aria-pressed={active}
+                      className={`flex-shrink-0 flex items-center justify-center w-[46px] px-1 py-3 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
+                        active
+                          ? 'bg-white text-[#111111] border-l-0'
+                          : 'bg-[#E7E1D3] text-[#333333] hover:bg-white'
+                      }`}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-            <p className="text-xs text-[#555555] mt-4 uppercase tracking-wide font-mono">Scroll to view all {certifications.length} certifications</p>
+            <p className="text-xs text-[#555555] mt-4 uppercase tracking-wide font-mono">
+              Scroll to view all {certifications.filter((cert) => cert.category === activeCertCategory).length} certifications in {activeCertCategory}
+            </p>
           </div>
         </div>
       </section>
