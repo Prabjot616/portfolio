@@ -459,6 +459,30 @@ const CheckMark = () => (
 // flies an enlarged copy up into the center of the screen over a dimmed
 // backdrop. Closes on Escape (handled by the caller), backdrop click, or
 // the close button.
+// Small wood-grain picture frame for a certificate memento — the
+// counterpart to the taped polaroid used for photos. Corner "miter" marks
+// suggest a real frame's joined edges.
+const WoodFrame = ({ src, size = 84 }: { src: string; size?: number }) => (
+  <div
+    className="relative"
+    style={{
+      width: size,
+      padding: '7px',
+      background: 'linear-gradient(155deg, #C79A66, #8B6239 55%, #6B4A2E)',
+      boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.25), 0 5px 12px rgba(0,0,0,0.25)',
+    }}
+  >
+    <img
+      src={src} alt="" className="block w-full object-cover object-top"
+      style={{ height: size * 0.93, border: '1px solid rgba(0,0,0,0.3)' }}
+    />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-b-0" style={{ top: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-b-0" style={{ top: 2, right: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-t-0" style={{ bottom: 2, left: 2 }} />
+    <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-t-0" style={{ bottom: 2, right: 2 }} />
+  </div>
+);
+
 const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; title: string; meta: string } | null; onClose: () => void }) => {
   if (!photo) return null;
   return (
@@ -690,7 +714,7 @@ const achievements = [
   { title: 'Top 100 Finalist, Google APAC Hackathon', meta: 'AI/SEO Analysis Pipeline' },
   { title: 'AWS AI Practitioner Certified', meta: '2024' },
   { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23', photo: '/images/achievements/employee-2022-23.jpg', photoRotate: '-7deg' },
-  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21' },
+  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21', certificate: '/images/achievements/cert-star-performer.jpg', photoRotate: '-4deg' },
   { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', photoRotate: '5deg' },
   { title: 'Academic Excellence Award', meta: 'BCA · 2017–18', photo: '/images/achievements/academic-excellence.jpg', photoRotate: '-6deg' },
   { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
@@ -923,30 +947,57 @@ export default function Portfolio() {
               Achievements
             </h2>
             <ul className="space-y-8">
-              {achievements.map((achieve, idx) => (
-                <li key={idx} className={`scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default ${achieve.photo ? 'pr-20 sm:pr-24' : ''}`}>
-                  <CheckMark />
-                  <div>
-                    <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
-                    <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
-                  </div>
-                  {achieve.photo && (
-                    <button
-                      type="button"
-                      onClick={() => setOpenAchievementPhoto({ src: achieve.photo!, title: achieve.title, meta: achieve.meta })}
-                      className="absolute -top-4 -right-3 bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)] cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
-                      style={{ width: '84px', padding: '6px 6px 20px', transform: `rotate(${achieve.photoRotate})` }}
-                      aria-label={`View photo for ${achieve.title}`}
-                    >
-                      <span
-                        className="absolute left-1/2 bg-[#EAE3D3]"
-                        style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
-                      />
-                      <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: '70px' }} />
-                    </button>
-                  )}
-                </li>
-              ))}
+              {achievements.map((achieve, idx) => {
+                const hasMemento = !!(achieve.photo || achieve.certificate);
+                const combined = !!(achieve.photo && achieve.certificate);
+                return (
+                  <li key={idx} className={`scroll-reveal relative flex gap-4 items-start p-6 bg-white border-2 border-[#222222] hover-border hover:border-[#111111] transition-all duration-300 hover:shadow-md group cursor-default ${hasMemento ? 'pr-20 sm:pr-24' : ''}`}>
+                    <CheckMark />
+                    <div>
+                      <p className="font-heading text-lg text-[#111111] leading-tight mb-0.5">{achieve.title}</p>
+                      <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
+                    </div>
+                    {hasMemento && (
+                      <div className="absolute -top-4 -right-3 flex items-end">
+                        {achieve.certificate && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenAchievementPhoto({ src: achieve.certificate!, title: achieve.title, meta: achieve.meta })}
+                            className="cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
+                            style={{
+                              transform: combined ? 'rotate(-7deg) translateX(14px)' : `rotate(${achieve.photoRotate})`,
+                              zIndex: combined ? 1 : 2,
+                            }}
+                            aria-label={`View certificate for ${achieve.title}`}
+                          >
+                            <WoodFrame src={achieve.certificate} size={combined ? 54 : 84} />
+                          </button>
+                        )}
+                        {achieve.photo && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenAchievementPhoto({ src: achieve.photo!, title: achieve.title, meta: achieve.meta })}
+                            className="relative bg-white shadow-[0_5px_12px_rgba(0,0,0,0.22)] cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_8px_18px_rgba(0,0,0,0.3)]"
+                            style={{
+                              width: combined ? '66px' : '84px',
+                              padding: combined ? '5px 5px 16px' : '6px 6px 20px',
+                              transform: `rotate(${achieve.photoRotate})`,
+                              zIndex: 2,
+                            }}
+                            aria-label={`View photo for ${achieve.title}`}
+                          >
+                            <span
+                              className="absolute left-1/2 bg-[#EAE3D3]"
+                              style={{ top: '-8px', width: '34px', height: '13px', transform: 'translateX(-50%) rotate(-3deg)', opacity: 0.85 }}
+                            />
+                            <img src={achieve.photo} alt="" className="block w-full object-cover" style={{ height: combined ? '54px' : '70px' }} />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
