@@ -1099,8 +1099,8 @@ export default function Portfolio() {
                       aria-pressed={active}
                       className={`flex-shrink-0 flex items-center justify-center w-[46px] px-1 py-3 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
                         active
-                          ? 'bg-white text-[#111111] border-l-0'
-                          : 'bg-[#E7E1D3] text-[#333333] hover:bg-white'
+                          ? 'bg-white text-[#1D4ED8] border-l-0'
+                          : 'bg-[#E7E1D3] text-[#1D4ED8] hover:bg-white'
                       }`}
                       style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
                     >
