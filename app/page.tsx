@@ -455,13 +455,9 @@ const CheckMark = () => (
   </svg>
 );
 
-// Full-screen viewer for an achievement polaroid: clicking the small photo
-// flies an enlarged copy up into the center of the screen over a dimmed
-// backdrop. Closes on Escape (handled by the caller), backdrop click, or
-// the close button.
-// Small wood-grain picture frame for a certificate memento — the
-// counterpart to the taped polaroid used for photos. Corner "miter" marks
-// suggest a real frame's joined edges.
+// Small wood-grain picture frame for an achievement certificate memento —
+// the counterpart to the taped polaroid used for photos. Corner "miter"
+// marks suggest a real frame's joined edges.
 const WoodFrame = ({ src, size = 84, aspect = 0.78 }: { src: string; size?: number; aspect?: number }) => (
   <div
     className="relative"
@@ -483,6 +479,10 @@ const WoodFrame = ({ src, size = 84, aspect = 0.78 }: { src: string; size?: numb
   </div>
 );
 
+// Full-screen viewer for an achievement polaroid: clicking the small photo
+// flies an enlarged copy up into the center of the screen over a dimmed
+// backdrop. Closes on Escape (handled by the caller), backdrop click, or
+// the close button.
 const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; title: string; meta: string } | null; onClose: () => void }) => {
   if (!photo) return null;
   return (
@@ -508,7 +508,7 @@ const AchievementPhotoLightbox = ({ photo, onClose }: { photo: { src: string; ti
             <path d="M2,2 L16,16 M16,2 L2,16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
-        <img src={photo.src} alt="" className="block w-full object-cover" style={{ height: 'min(70vw, 340px)' }} />
+        <img src={photo.src} alt="" className="block w-full h-auto" style={{ maxHeight: '70vh', objectFit: 'contain' }} />
         <p className="font-heading text-2xl text-[#111111] text-center mt-4">{photo.title}</p>
         <p className="text-xs text-[#555555] font-mono text-center mt-1">{photo.meta}</p>
       </div>
@@ -990,7 +990,7 @@ export default function Portfolio() {
                       <p className="text-xs text-[#555555] font-mono">{achieve.meta}</p>
                     </div>
                     {hasMemento && (
-                      <div className="absolute -top-4 -right-3 flex items-end">
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-3 flex items-end">
                         {achieve.certificate && (
                           <button
                             type="button"
@@ -1058,7 +1058,10 @@ export default function Portfolio() {
                               className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
                               aria-label={`View certificate for ${cert.name}`}
                             >
-                              <WoodFrame src={cert.image} size={32} aspect={cert.imageAspect ?? 0.78} />
+                              <img
+                                src={cert.image} alt="" className="block border-2 border-[#222222]"
+                                style={{ width: 32, aspectRatio: cert.imageAspect ?? 0.78 }}
+                              />
                             </button>
                           )}
                           {cert.link && (
