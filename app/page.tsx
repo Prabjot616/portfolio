@@ -706,9 +706,9 @@ const certifications = [
   { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics' },
   { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI' },
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI' },
-  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36 },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38' },
-  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ' },
+  { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ' },
   { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3' },
   { name: 'Introduction to Game Development', issuer: 'Coursera', date: 'May 2020', id: '2EPRZ7FGZ2MR' },
   { name: 'Code Gladiator 2019 Semifinalist', issuer: 'TechGig', date: 'Jun 2019', id: 'THFZbDA3VHB5NEd3eU1ObEhNNGJkQ01nMUlPREo2RjlrejEwc3VGVGVIK0xHa1JIN1hKcVRSTG9UUVNj' },
@@ -1020,18 +1020,29 @@ export default function Portfolio() {
                 {certifications.map((cert, idx) => (
                   <div key={idx} className="relative pl-8 group">
                     <TimelinePin />
-                    <h3 className="text-[#111111] font-heading text-lg mb-1 flex items-center gap-1.5">
+                    <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
                       {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
                       {cert.name}
                       {cert.image && (
                         <button
                           type="button"
                           onClick={() => setOpenAchievementPhoto({ src: cert.image!, title: cert.name, meta: `${cert.issuer}${cert.date ? ` · ${cert.date}` : ''}` })}
-                          className="flex-shrink-0 w-6 h-6 border border-[#222222] overflow-hidden cursor-zoom-in hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)] transition-shadow duration-200"
+                          className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
                           aria-label={`View certificate for ${cert.name}`}
                         >
-                          <img src={cert.image} alt="" className="block w-full h-full object-cover" />
+                          <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
                         </button>
+                      )}
+                      {cert.link && (
+                        <a
+                          href={cert.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-shrink-0 text-xs font-mono text-[#555555] hover:text-[#111111] underline decoration-dashed underline-offset-2 transition-colors duration-200"
+                          aria-label={`Show credential for ${cert.name}`}
+                        >
+                          Show credential ↗
+                        </a>
                       )}
                     </h3>
                     <p className="text-xs text-[#555555]">
