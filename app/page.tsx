@@ -1034,7 +1034,7 @@ export default function Portfolio() {
           </div>
 
           {/* Certifications */}
-          <div className="flex flex-col h-full min-h-0" style={{ height: rightHeight }}>
+          <div className="flex flex-col h-full min-h-0" style={{ height: Math.max(parseFloat(rightHeight) || 0, CERT_CATEGORIES.length * CERT_TAB_HEIGHT) }}>
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
@@ -1083,7 +1083,7 @@ export default function Portfolio() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col flex-shrink-0 justify-center">
+              <div className="flex flex-col flex-shrink-0">
                 {CERT_CATEGORIES.map((cat, i) => {
                   const active = cat === activeCertCategory;
                   const isFirst = i === 0;
@@ -1095,12 +1095,12 @@ export default function Portfolio() {
                       type="button"
                       onClick={() => setActiveCertCategory(cat)}
                       aria-pressed={active}
-                      className={`flex-shrink-0 flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
+                      className={`flex-1 flex items-center justify-center px-1 py-2 font-heading font-bold text-[15px] leading-tight whitespace-normal text-center border-2 border-[#222222] transition-colors duration-200 ${isFirst ? 'rounded-tr-lg' : 'border-t-0'} ${isLast ? 'rounded-br-lg' : ''} ${
                         active
                           ? 'bg-white text-[#111111] border-l-0 w-[54px]'
                           : 'bg-[#E7E1D3] text-[#333333] w-[46px] hover:bg-white'
                       }`}
-                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', height: CERT_TAB_HEIGHT }}
+                      style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', minHeight: CERT_TAB_HEIGHT }}
                     >
                       {cat}
                     </button>
