@@ -462,7 +462,7 @@ const CheckMark = () => (
 // Small wood-grain picture frame for a certificate memento — the
 // counterpart to the taped polaroid used for photos. Corner "miter" marks
 // suggest a real frame's joined edges.
-const WoodFrame = ({ src, size = 84 }: { src: string; size?: number }) => (
+const WoodFrame = ({ src, size = 84, aspect = 0.78 }: { src: string; size?: number; aspect?: number }) => (
   <div
     className="relative"
     style={{
@@ -473,8 +473,8 @@ const WoodFrame = ({ src, size = 84 }: { src: string; size?: number }) => (
     }}
   >
     <img
-      src={src} alt="" className="block w-full object-cover object-top"
-      style={{ height: size * 0.93, border: '1px solid rgba(0,0,0,0.3)' }}
+      src={src} alt="" className="block w-full"
+      style={{ aspectRatio: aspect, border: '1px solid rgba(0,0,0,0.3)' }}
     />
     <span className="absolute w-[10px] h-[10px] border border-black/35 border-r-0 border-b-0" style={{ top: 2, left: 2 }} />
     <span className="absolute w-[10px] h-[10px] border border-black/35 border-l-0 border-b-0" style={{ top: 2, right: 2 }} />
@@ -713,11 +713,11 @@ const achievements = [
   { title: 'Mentor of the Year', meta: 'Tech Wishes Solutions · 2025–26', photo: '/images/achievements/mentor-of-the-year.jpg', photoRotate: '6deg' },
   { title: 'Top 100 Finalist, Google APAC Hackathon', meta: 'AI/SEO Analysis Pipeline' },
   { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2022–23', photo: '/images/achievements/employee-2022-23.jpg', photoRotate: '-7deg' },
-  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21', certificate: '/images/achievements/cert-star-performer.jpg', photoRotate: '-4deg' },
-  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', certificate: '/images/achievements/cert-employee-2020-21.jpg', photoRotate: '5deg' },
+  { title: 'Star Performer', meta: 'Tech Wishes Solutions · 2020–21', certificate: '/images/achievements/cert-star-performer.jpg', certAspect: 0.79, photoRotate: '-4deg' },
+  { title: 'Employee of the Year', meta: 'Tech Wishes Solutions · 2020–21', photo: '/images/achievements/employee-2020-21.jpg', certificate: '/images/achievements/cert-employee-2020-21.jpg', certAspect: 0.77, photoRotate: '5deg' },
   { title: 'Academic Excellence Award', meta: 'BCA · 2017–18', photo: '/images/achievements/academic-excellence.jpg', photoRotate: '-6deg' },
-  { title: 'Academic Excellence Award', meta: 'BCA · 2016–17', certificate: '/images/achievements/cert-academic-excellence-2016-17.jpg', photoRotate: '5deg' },
-  { title: 'Ram Avtar Gupt Pratibha Puruskar', meta: 'Agrasain Balika Siksha Sadan · 2014', certificate: '/images/achievements/cert-ram-avtar-gupt-puruskar.jpg', photoRotate: '-5deg' },
+  { title: 'Academic Excellence Award', meta: 'BCA · 2016–17', certificate: '/images/achievements/cert-academic-excellence-2016-17.jpg', certAspect: 0.67, photoRotate: '5deg' },
+  { title: 'Ram Avtar Gupt Pratibha Puruskar', meta: 'Agrasain Balika Siksha Sadan · 2014', certificate: '/images/achievements/cert-ram-avtar-gupt-puruskar.jpg', certAspect: 1.27, photoRotate: '-5deg' },
   { title: 'Intern → Software Engineer → Senior Software Engineer → Lead Software Engineer', meta: 'Tech Wishes Solutions · 2019–Present' },
 ];
 
@@ -971,7 +971,7 @@ export default function Portfolio() {
                             }}
                             aria-label={`View certificate for ${achieve.title}`}
                           >
-                            <WoodFrame src={achieve.certificate} size={combined ? 54 : 84} />
+                            <WoodFrame src={achieve.certificate} size={combined ? 54 : 84} aspect={achieve.certAspect} />
                           </button>
                         )}
                         {achieve.photo && (
