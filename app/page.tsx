@@ -1083,7 +1083,7 @@ export default function Portfolio() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col flex-shrink-0 justify-center">
+              <div className="flex flex-col flex-shrink-0 justify-start">
                 {CERT_CATEGORIES.map((cat, i) => {
                   const active = cat === activeCertCategory;
                   const isFirst = i === 0;
