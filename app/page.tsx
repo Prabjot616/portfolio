@@ -691,8 +691,8 @@ const CERT_CATEGORIES = ['AI & Machine Learning', 'Game Development', 'Software 
 const CERT_TAB_HEIGHT = 130;
 
 const certifications = [
-  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', featured: true, category: 'AI & Machine Learning' },
-  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', featured: true, category: 'AI & Machine Learning' },
+  { name: 'Google Cloud Gen AI Academy APAC Edition', issuer: 'Google', date: 'Jul 2026', id: '2026H2S07GCGENAIAPACC2-P02586', skills: 'Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
+  { name: 'AWS AI Practitioner Challenge', issuer: 'Udacity', date: 'May 2026', skills: 'AI Productivity · Responsible AI', category: 'AI & Machine Learning' },
   { name: 'Build AI Agents with Enterprise Databases', issuer: 'Google', date: 'Jun 2026', id: '25090841', skills: 'Vertex AI · Google Agent Development Kit (ADK)', category: 'AI & Machine Learning' },
   { name: 'Software Architecture Foundations', issuer: 'LinkedIn', date: 'Aug 2025', skills: 'Software Architecture', category: 'Software & Web' },
   { name: 'Introduction to Artificial Intelligence', issuer: 'LinkedIn', date: 'May 2025', skills: 'Artificial Intelligence (AI)', category: 'AI & Machine Learning' },
@@ -1050,7 +1050,6 @@ export default function Portfolio() {
                       <div key={idx} className="relative pl-8 group">
                         <TimelinePin />
                         <h3 className="text-[#111111] font-heading text-lg mb-1 flex flex-wrap items-center gap-2">
-                          {cert.featured && <CornerStar size={16} className="flex-shrink-0" />}
                           {cert.name}
                           {cert.image && (
                             <button
@@ -1059,7 +1058,7 @@ export default function Portfolio() {
                               className="flex-shrink-0 cursor-zoom-in transition-shadow duration-200 hover:shadow-[0_4px_10px_rgba(0,0,0,0.3)]"
                               aria-label={`View certificate for ${cert.name}`}
                             >
-                              <WoodFrame src={cert.image} size={44} aspect={cert.imageAspect ?? 0.78} />
+                              <WoodFrame src={cert.image} size={32} aspect={cert.imageAspect ?? 0.78} />
                             </button>
                           )}
                           {cert.link && (
