@@ -709,7 +709,7 @@ const certifications = [
   { name: 'Learning 3D Graphics on the Web with Three.js', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Three.js · 3D Graphics', category: 'Software & Web' },
   { name: 'Generative AI Imaging: What Creative Pros Need to Know', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Conditional Image Generation · Generative AI', category: 'AI & Machine Learning' },
   { name: 'Nano Tips for Using Generative AI Tools for Better Marketing Outcomes', issuer: 'LinkedIn', date: 'Apr 2023', skills: 'Artificial Intelligence (AI) · Generative AI', category: 'AI & Machine Learning' },
-  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', image: '/images/certifications/aws-planning-ml-project.jpg', imageAspect: 1.36, category: 'AI & Machine Learning' },
+  { name: 'AWS Planning a Machine Learning Project', issuer: 'Amazon Web Services (AWS)', date: 'Aug 2026', skills: 'Machine Learning', images: ['/images/certifications/aws-planning-ml-project.jpg'], category: 'AI & Machine Learning' },
   { name: 'Game Development for Modern Platforms', issuer: 'Coursera', date: 'Jul 2020', id: 'C5FKFZ22NL38', category: 'Game Development' },
   { name: 'Business of Games and Entrepreneurship', issuer: 'Coursera', date: 'Jul 2020', id: '4CN5ABSDLNEZ', link: 'https://www.coursera.org/account/accomplishments/certificate/4CN5ABSDLNEZ', category: 'Game Development' },
   { name: 'Principles of Game Design', issuer: 'Coursera', date: 'Jun 2020', id: '7LVLBPBBAXH3', link: 'https://www.coursera.org/account/accomplishments/certificate/7LVLBPBBAXH3', category: 'Game Development' },
