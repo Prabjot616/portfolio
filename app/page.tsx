@@ -1034,11 +1034,11 @@ export default function Portfolio() {
           </div>
 
           {/* Certifications */}
-          <div className="flex flex-col h-full min-h-0" style={{ height: Math.max(parseFloat(rightHeight) || 0, CERT_CATEGORIES.length * CERT_TAB_HEIGHT) }}>
+          <div className="flex flex-col h-full min-h-0" style={{ height: rightHeight }}>
             <h2 className="font-heading text-4xl md:text-5xl text-[#111111] mb-24 tracking-tight flex-shrink-0">
               Certifications
             </h2>
-            <div className="scroll-reveal flex-1 min-h-0 flex">
+            <div className="scroll-reveal flex-1 min-h-0 flex" style={{ minHeight: CERT_CATEGORIES.length * CERT_TAB_HEIGHT }}>
               <div ref={certBoxRef} className="relative bg-white border-2 border-[#222222] flex-1 min-w-0 min-h-0 flex flex-col">
                 <div
                   className="absolute bg-white z-10 pointer-events-none"
